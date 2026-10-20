@@ -46,9 +46,8 @@
             margin-bottom: 24px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: stretch;
             gap: 16px;
         }
         .header-title h1 {
@@ -62,9 +61,10 @@
             font-size: 14px;
         }
         .stats-bar {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 12px;
-            flex-wrap: wrap;
+            align-items: start;
         }
         .stat-card {
             background: var(--bg);
@@ -85,6 +85,59 @@
             font-weight: 600;
             color: var(--text-muted);
             margin-top: 2px;
+        }
+        .stat-card.wide {
+            min-width: 0;
+        }
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 8px;
+            justify-content: center;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 4px;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            color: #0F172A;
+            cursor: pointer;
+            line-height: 1.5;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .chip:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(15,23,42,0.12);
+        }
+        .chip .c {
+            font-size: 9.5px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+        .chip.up {
+            background: #ECFDF5;
+            border-color: #A7F3D0;
+            color: #047857;
+        }
+        .chip.down {
+            background: #FEF2F2;
+            border-color: #FECACA;
+            color: #B91C1C;
+        }
+        .chip.flat {
+            background: #F8FAFC;
+            color: #475569;
+        }
+        .chip-empty {
+            font-size: 11px;
+            color: var(--text-muted);
         }
 
         /* Section Cards */
@@ -308,24 +361,27 @@
         <header>
             <div class="header-title">
                 <h1>SET / mai Multi-Timeframe MACD Scanner</h1>
-                <p>Criteria: Monthly MACD &gt; 0 &bull; Weekly MACD &gt; 0 &bull; Daily MACD Pullbacks &amp; Fresh Crossovers</p>
+                <p>Criteria: Monthly MACD &gt; 0 &bull; Weekly MACD &gt; 0 &bull; Daily MACD Pullbacks &amp; Fresh Crossovers &bull; ข้อมูล ณ 20 Oct 2026</p>
             </div>
             <div class="stats-bar">
                 <div class="stat-card">
-                    <div class="val" id="stat-total">98</div>
+                    <div class="val" id="stat-total">105</div>
                     <div class="lbl">Total Matches</div>
                 </div>
-                <div class="stat-card">
-                    <div class="val" style="color: #059669;" id="stat-g2">2</div>
+                <div class="stat-card wide">
+                    <div class="val" style="color: #059669;" id="stat-g2">15</div>
                     <div class="lbl">Fresh MACD &gt; 0</div>
+                    <div class="chips" id="chips-g2"></div>
                 </div>
-                <div class="stat-card">
-                    <div class="val" style="color: #4338CA;" id="stat-turnaround">12</div>
+                <div class="stat-card wide">
+                    <div class="val" style="color: #4338CA;" id="stat-turnaround">24</div>
                     <div class="lbl">Early Turnaround</div>
+                    <div class="chips" id="chips-turnaround"></div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card wide">
                     <div class="val" style="color: #D97706;" id="stat-top9">9</div>
                     <div class="lbl">Top Focus</div>
+                    <div class="chips" id="chips-top9"></div>
                 </div>
             </div>
         </header>
@@ -340,17 +396,18 @@
                 <button class="chart-tab active" onclick="loadChart('chart_3x3_top_focus.png', this)">🎯 Top 9 Focus</button>
                 <button class="chart-tab" onclick="loadChart('chart_3x3_group2_and_turnaround.png', this)">⚡ Group 2 &amp; Turnarounds</button>
                 <button class="chart-tab" onclick="loadChart('chart_3x3_group1_pullbacks.png', this)">🔄 Group 1 Pullbacks</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_01.png', this)">Page 1</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_02.png', this)">Page 2</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_03.png', this)">Page 3</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_04.png', this)">Page 4</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_05.png', this)">Page 5</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_06.png', this)">Page 6</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_07.png', this)">Page 7</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_08.png', this)">Page 8</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_09.png', this)">Page 9</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_10.png', this)">Page 10</button>
-                <button class="chart-tab" onclick="loadChart('chart_3x3_page_11.png', this)">Page 11</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_01.png&quot;, this)">Page 1</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_02.png&quot;, this)">Page 2</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_03.png&quot;, this)">Page 3</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_04.png&quot;, this)">Page 4</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_05.png&quot;, this)">Page 5</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_06.png&quot;, this)">Page 6</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_07.png&quot;, this)">Page 7</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_08.png&quot;, this)">Page 8</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_09.png&quot;, this)">Page 9</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_10.png&quot;, this)">Page 10</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_11.png&quot;, this)">Page 11</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_12.png&quot;, this)">Page 12</button>
             </div>
             <div class="chart-viewport">
                 <img id="main-chart-img" src="20%20Oct%202026/chart_3x3_top_focus.png" alt="Technical Chart Grid">
@@ -360,15 +417,15 @@
         <!-- Interactive Summary Table Section -->
         <div class="section-card">
             <div class="section-header">
-                <div class="section-title">📊 Multi-Timeframe Technical Scan Summary Table (<span id="showing-count">98</span> Stocks)</div>
+                <div class="section-title">📊 Multi-Timeframe Technical Scan Summary Table (<span id="showing-count">105</span> Stocks)</div>
                 <div class="controls">
                     <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search symbol or sector..." oninput="filterTable()">
                     <div class="btn-group">
-                        <button class="filter-btn active" onclick="setFilter('all', this)">All (98)</button>
-                        <button class="filter-btn" onclick="setFilter('top9', this)">🎯 Top 9 Focus</button>
-                        <button class="filter-btn" onclick="setFilter('g2', this)">🟢 Group 2 (&le;5d)</button>
-                        <button class="filter-btn" onclick="setFilter('turnaround', this)">🔵 Early Turnaround</button>
-                        <button class="filter-btn" onclick="setFilter('liquid', this)">💧 Liquid &gt;10M</button>
+                        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All (105)</button>
+                        <button class="filter-btn" data-filter="top9" onclick="setFilter('top9', this)">🎯 Top 9 Focus</button>
+                        <button class="filter-btn" data-filter="g2" onclick="setFilter('g2', this)">🟢 Group 2 (&le;5d)</button>
+                        <button class="filter-btn" data-filter="turnaround" onclick="setFilter('turnaround', this)">🔵 Early Turnaround</button>
+                        <button class="filter-btn" data-filter="liquid" onclick="setFilter('liquid', this)">💧 Liquid &gt;10M</button>
                     </div>
                 </div>
             </div>
@@ -405,6 +462,48 @@
         let currentFilter = 'all';
         let sortKey = 'idx';
         let sortAsc = true;
+
+        // ---- ticker chips for the header cards ---------------------------------
+        function chipHtml(d) {
+            const cls = d.chg_1d > 0 ? 'up' : (d.chg_1d < 0 ? 'down' : 'flat');
+            const sign = d.chg_1d > 0 ? '+' : '';
+            const tip = `${d.name} · Score ${d.tech_score} · ${sign}${d.chg_1d.toFixed(2)}% · RSI ${d.rsi14.toFixed(1)}`;
+            return `<button class="chip ${cls}" title="${tip}" onclick="focusSymbol('${d.symbol}')">`
+                 + `<span class="s">${d.symbol}</span>`
+                 + `<span class="c">${sign}${d.chg_1d.toFixed(2)}%</span></button>`;
+        }
+
+        // ---- header stats: always recomputed from the data of THIS run ----------
+        function updateStats() {
+            const groups = {
+                'stat-g2': rawData.filter(d => d.group_id === 2),
+                'stat-turnaround': rawData.filter(d => d.is_turnaround),
+                'stat-top9': rawData.filter(d => d.is_top9)
+            };
+            document.getElementById('stat-total').innerText = rawData.length;
+
+            Object.keys(groups).forEach(id => {
+                const rows = groups[id];
+                const valEl = document.getElementById(id);
+                if (valEl) valEl.innerText = rows.length;
+                const chipsEl = document.getElementById(id.replace('stat-', 'chips-'));
+                if (chipsEl) {
+                    chipsEl.innerHTML = rows.length
+                        ? rows.map(chipHtml).join('')
+                        : '<span class="chip-empty">— ไม่มีหุ้นเข้าเกณฑ์รอบนี้ —</span>';
+                }
+            });
+
+            const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
+            if (allBtn) allBtn.innerText = `All (${rawData.length})`;
+        }
+
+        // ---- click a ticker chip -> jump to it in the table ---------------------
+        function focusSymbol(sym) {
+            document.getElementById('searchInput').value = sym;
+            setFilter('all', document.querySelector('.filter-btn[data-filter="all"]'));
+            document.getElementById('stocksTable').scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
 
         function loadChart(filename, btn) {
             document.getElementById('main-chart-img').src = filename;
@@ -505,7 +604,8 @@
             }).join('');
         }
 
-        // Initial render
+        // Initial render — counts always come from rawData, never hardcoded
+        updateStats();
         renderTable();
     </script>
 </body>
