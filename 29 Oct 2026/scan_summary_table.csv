@@ -1,0 +1,107 @@
+symbol,name,sector,industry,group,group_id,early_turnaround,days_macd_pos,days_hist_pos,close,chg_1d,d_macd,d_sig,d_hist,w_macd,m_macd,rsi14,ma10,ma25,ma55,ma89,ma200,above_ma200,ma_alignment,avg_val20_m,last_val_m,tech_score
+SCB,SCB,Banking,Financials,Group 2: Daily MACD > 0 (<= 5d),2,False,1,4,154.5,0.6514657980456029,0.186,-0.793,0.979,2.314,9.49,63.7,149.05,150.38,150.92,151.14,144.76,True,False,2165.28,2654.68,100
+EGCO,EGCO,Energy & Utilities,Resources,Group 2: Daily MACD > 0 (<= 5d),2,False,4,6,131.5,-1.1278195488721776,0.906,-0.052,0.958,2.766,1.527,58.2,129.2,128.2,129.65,128.34,121.12,True,False,138.36,60.38,100
+TLI,TLI,Insurance,Financials,Group 2: Daily MACD > 0 (<= 5d),2,False,5,8,11.7,0.0,0.074,0.021,0.053,0.135,0.14,62.3,11.47,11.36,11.35,11.45,11.11,True,False,136.17,89.45,100
+ICHI,ICHI,Food & Beverage,Agro & Food Industry,Group 2: Daily MACD > 0 (<= 5d),2,False,2,8,14.2,-0.6993006993007089,0.052,-0.084,0.136,0.073,0.114,64.2,13.61,13.57,13.93,14.08,13.66,True,False,49.58,70.79,97
+PTT,PTT,Energy & Utilities,Resources,Group 2: Daily MACD > 0 (<= 5d),2,False,2,3,42.0,0.0,0.081,-0.044,0.125,1.593,1.77,59.3,41.18,41.4,41.15,39.69,37.07,True,False,3706.57,2459.94,95
+KTB,KTB,Banking,Financials,Group 2: Daily MACD > 0 (<= 5d),2,False,2,7,44.5,0.5649717514124353,0.162,-0.097,0.259,2.27,5.929,60.2,43.38,43.16,43.6,42.37,36.9,True,False,2866.88,2195.94,95
+RATCH,RATCH,Energy & Utilities,Resources,Group 2: Daily MACD > 0 (<= 5d),2,False,5,9,38.25,-1.2903225806451646,0.254,0.134,0.12,1.771,1.579,52.8,38.25,37.86,37.8,36.88,33.07,True,False,204.21,124.77,95
+PSP,PSP,Industrial Materials & Machinery,Industrials,Group 2: Daily MACD > 0 (<= 5d),2,False,4,14,7.8,2.6315789473684292,0.087,-0.007,0.094,0.487,0.341,63.1,7.41,7.13,7.53,7.36,5.84,True,False,10.81,7.3,94
+STPI,STPI,Construction Services,Property & Construction,Group 2: Daily MACD > 0 (<= 5d),2,False,5,16,5.7,2.7027027027027195,0.019,-0.005,0.023,0.167,0.546,54.2,5.6,5.53,5.65,5.7,5.11,True,False,63.41,75.0,92
+KCG,KCG,Food & Beverage,Agro & Food Industry,Group 2: Daily MACD > 0 (<= 5d),2,False,2,15,10.4,0.0,0.025,-0.021,0.046,0.142,0.339,60.1,10.14,10.08,10.27,10.27,9.74,True,False,5.26,6.94,91
+CREDIT,CREDIT,Banking,Financials,Group 2: Daily MACD > 0 (<= 5d),2,False,1,5,23.7,3.04347826086957,0.096,-0.24,0.336,0.839,0.239,69.6,21.87,21.92,22.61,22.54,19.68,True,False,17.56,27.45,90
+WINNER,WINNER,Agro & Food Industry,Agro & Food Industry,Group 2: Daily MACD > 0 (<= 5d),2,False,4,16,2.24,0.9009009009008917,0.005,0.001,0.004,0.027,0.016,57.0,2.22,2.21,2.22,2.2,2.15,True,False,0.18,0.48,87
+TACC,TACC,Agro & Food Industry,Agro & Food Industry,Group 2: Daily MACD > 0 (<= 5d),2,False,1,7,6.5,2.3622047244094446,0.002,-0.019,0.021,0.17,0.382,62.5,6.36,6.35,6.43,6.38,5.92,True,False,9.42,23.53,86
+LHFG,LHFG,Banking,Financials,Group 2: Daily MACD > 0 (<= 5d),2,False,5,8,1.25,0.8064516129032251,0.004,0.001,0.003,0.037,0.088,59.6,1.24,1.23,1.23,1.23,1.13,True,False,4.6,8.36,84
+TAE,TAE,Energy & Utilities,Resources,Group 2: Daily MACD > 0 (<= 5d),2,False,2,6,1.67,-0.5952380952380931,0.009,-0.005,0.014,0.111,0.181,64.3,1.59,1.59,1.61,1.58,1.23,True,False,2.45,5.16,84
+NCAP,NCAP,Finance & Securities,Financials,Group 2: Daily MACD > 0 (<= 5d),2,False,5,10,3.38,1.8072289156626509,0.021,-0.002,0.023,0.129,0.092,57.1,3.34,3.26,3.39,3.26,2.92,True,False,22.32,21.25,83
+ESTAR,ESTAR,Property Development,Property & Construction,Group 2: Daily MACD > 0 (<= 5d),2,False,3,2,0.25,0.0,0.001,0.0,0.0,0.007,0.0,53.0,0.25,0.25,0.25,0.24,0.23,True,False,0.1,0.02,82
+GULF,GULF,Energy & Utilities,Resources,Group 2: Daily MACD > 0 (<= 5d),2,False,3,11,61.5,0.0,0.071,-0.134,0.204,0.718,3.937,52.4,61.62,60.85,62.06,62.8,59.0,True,False,1906.3,1521.34,79
+PHOL,PHOL,Industrial,Industrial,Group 2: Daily MACD > 0 (<= 5d),2,False,4,8,3.26,-0.6097560975609762,0.006,0.0,0.006,0.077,0.079,49.9,3.27,3.25,3.28,3.24,3.04,True,False,0.31,0.22,72
+KGEN,KGEN,Services,Services,Group 2: Daily MACD > 0 (<= 5d),2,False,4,17,1.51,-1.9480519480519543,0.009,0.004,0.005,0.01,0.153,46.2,1.56,1.54,1.57,1.69,1.52,False,False,24.38,74.09,54
+KBANK,KBANK,Banking,Financials,Group 1: Daily MACD < 0,1,True,0,5,250.0,2.0408163265306145,-0.221,-2.255,2.035,9.791,24.306,62.7,238.7,240.8,245.56,239.33,214.12,True,False,4133.82,5324.72,100
+TISCO,TISCO,Banking,Financials,Group 1: Daily MACD < 0,1,True,0,5,126.0,0.3984063745019917,-0.117,-0.304,0.187,2.607,7.127,53.4,125.15,125.6,126.03,125.23,118.26,True,False,349.14,234.04,89
+AOT,AOT,Transportation & Logistics,Services,Group 1: Daily MACD < 0,1,True,0,4,60.0,-2.0408163265306145,-0.446,-0.848,0.403,1.049,1.821,49.9,58.95,59.9,61.93,62.31,57.21,True,False,1782.17,2099.59,83
+BBL,BBL,Banking,Financials,Group 1: Daily MACD < 0,1,True,0,3,187.5,1.3513513513513598,-1.341,-1.838,0.497,3.383,10.454,53.2,184.35,186.68,189.23,189.29,176.81,True,False,1540.71,2264.43,83
+HANA,HANA,Electronic Components,Technology,Group 1: Daily MACD < 0,1,False,0,0,49.25,2.0725388601036343,-0.079,0.498,-0.577,5.312,3.164,48.8,49.52,50.79,47.96,43.88,33.58,True,False,1357.19,870.82,80
+WHAUP,WHAUP,Energy & Utilities,Resources,Group 1: Daily MACD < 0,1,True,0,1,7.05,6.015037593984962,-0.109,-0.135,0.026,0.32,0.842,53.8,6.79,6.9,7.24,7.31,5.92,True,False,70.0,245.34,80
+TFFIF,TFFIF,Transportation & Logistics,Services,Group 1: Daily MACD < 0,1,True,0,1,7.0,0.0,-0.019,-0.019,0.0,0.103,0.095,50.0,6.95,7.02,7.05,6.95,6.75,True,False,20.45,11.13,79
+TCAP,TCAP,Banking,Financials,Group 1: Daily MACD < 0,1,False,0,8,80.25,0.0,-0.576,-0.776,0.201,4.667,8.06,49.1,79.9,80.57,83.01,78.74,67.26,True,False,252.03,107.45,78
+TFG,TFG,Food & Beverage,Agro & Food Industry,Group 1: Daily MACD < 0,1,True,0,4,9.5,-0.5235602094240899,-0.078,-0.127,0.05,0.264,1.509,50.6,9.3,9.49,9.7,9.84,8.5,True,False,118.06,103.59,78
+PSL,PSL,Transportation & Logistics,Services,Group 1: Daily MACD < 0,1,True,0,4,9.65,-4.455445544554449,-0.062,-0.113,0.052,0.651,0.153,47.4,9.67,9.84,10.06,9.14,7.88,True,False,94.02,107.47,78
+FORTH,FORTH,Information & Communication Technology,Technology,Group 1: Daily MACD < 0,1,True,0,2,14.0,-1.4084507042253502,-0.278,-0.336,0.057,0.612,0.031,47.5,13.81,14.2,15.04,15.32,11.74,True,False,38.26,16.84,76
+TTW,TTW,Energy & Utilities,Resources,Group 1: Daily MACD < 0,1,True,0,5,10.0,-0.990099009900991,-0.039,-0.054,0.015,0.136,0.236,47.0,9.98,10.03,10.19,10.12,9.62,True,False,30.19,5.77,76
+SCCC,SCCC,Construction Materials,Property & Construction,Group 1: Daily MACD < 0,1,True,0,2,151.5,-0.6557377049180357,-0.369,-0.383,0.014,1.769,0.502,47.1,151.4,152.36,152.69,150.82,146.57,True,False,7.2,4.4,76
+IVL,IVL,Petrochemicals & Chemicals,Industrials,Group 1: Daily MACD < 0,1,False,0,0,26.5,-3.6363636363636376,-0.012,0.178,-0.19,1.353,0.065,44.2,27.25,27.71,26.05,24.83,23.36,True,False,476.58,675.52,72
+DMT,DMT,Transportation & Logistics,Services,Group 1: Daily MACD < 0,1,True,0,4,12.1,0.8333333333333304,-0.011,-0.023,0.012,0.191,0.229,53.3,12.01,12.04,12.11,12.1,11.51,True,False,2.89,1.75,72
+2S,2S,Steel and Metal Products,Industrials,Group 1: Daily MACD < 0,1,True,0,3,3.54,0.0,-0.025,-0.028,0.004,0.172,0.16,44.2,3.53,3.57,3.72,3.49,3.05,True,False,0.46,0.64,72
+INOX,INOX,Steel and Metal Products,Industrials,Group 1: Daily MACD < 0,1,True,0,1,3.9,2.0942408376963373,-0.016,-0.016,0.001,0.404,0.906,51.2,3.87,3.88,3.95,4.03,2.5,True,False,0.07,0.17,70
+BIZ,BIZ,Personal Products & Pharmaceuticals,Consumer Products,Group 1: Daily MACD < 0,1,False,0,0,6.05,0.8333333333333304,-0.01,0.007,-0.018,0.267,0.603,47.4,6.06,6.11,6.05,6.0,5.28,True,False,1.24,0.13,69
+GUNKUL,GUNKUL,Energy & Utilities,Resources,Group 1: Daily MACD < 0,1,False,0,0,4.92,0.8196721311475308,-0.043,-0.032,-0.011,0.431,0.623,44.6,4.95,5.07,5.06,4.92,3.62,True,False,314.34,265.09,68
+MBK,MBK,Property Development,Property & Construction,Group 1: Daily MACD < 0,1,False,0,8,20.1,1.005025125628145,-0.313,-0.434,0.121,0.27,0.909,47.9,19.77,20.01,21.3,21.11,19.39,True,False,44.01,91.08,68
+PRG,PRG,Food & Beverage,Agro & Food Industry,Group 1: Daily MACD < 0,1,True,0,3,10.5,-0.9433962264150941,-0.102,-0.103,0.001,0.374,0.297,42.1,10.59,10.72,10.97,10.46,9.66,True,False,0.16,0.51,68
+TOP,TOP,Energy & Utilities,Resources,Group 1: Daily MACD < 0,1,False,0,0,65.25,-3.3333333333333326,-0.015,1.053,-1.068,5.773,5.717,41.0,69.82,70.7,67.3,62.56,53.38,True,False,1667.64,2832.52,66
+TTB,TTB,Banking,Financials,Group 1: Daily MACD < 0,1,False,0,0,2.76,0.7299270072992581,-0.067,-0.05,-0.017,0.127,0.284,36.6,2.8,2.92,2.95,2.86,2.49,True,False,1307.9,1022.53,66
+BCP,BCP,Energy & Utilities,Resources,Group 1: Daily MACD < 0,1,False,0,0,49.5,-3.8834951456310662,-0.638,-0.448,-0.19,4.222,3.443,40.2,51.4,52.44,52.97,47.52,40.19,True,False,1056.74,927.21,66
+STECON,STECON,Construction Services,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,17.1,1.183431952662728,-0.364,-0.276,-0.087,1.022,2.653,39.6,17.28,18.06,18.02,18.08,14.41,True,False,319.27,188.11,66
+AYUD,AYUD,Insurance,Financials,Group 1: Daily MACD < 0,1,True,0,1,42.25,0.5952380952380931,-0.27,-0.284,0.014,0.944,2.078,46.5,42.1,42.57,43.1,42.4,39.74,True,False,0.41,0.59,66
+MOONG,MOONG,Consumer Products,Consumer Products,Group 1: Daily MACD < 0,1,True,0,1,2.3,0.8771929824561431,-0.006,-0.007,0.0,0.018,0.031,50.1,2.29,2.3,2.32,2.33,2.25,True,False,0.27,0.07,66
+PPM,PPM,Industrial,Industrial,Group 1: Daily MACD < 0,1,True,0,2,1.97,0.5102040816326481,-0.02,-0.022,0.002,0.088,0.024,46.0,1.96,2.0,2.01,2.01,1.67,True,False,0.09,0.12,66
+INSET,INSET,Information & Communication Technology,Technology,Group 1: Daily MACD < 0,1,False,0,0,4.26,4.411764705882337,-0.13,-0.069,-0.061,0.336,0.518,40.5,4.36,4.59,4.62,4.48,3.44,True,False,46.3,56.89,65
+HTECH,HTECH,Industrial Materials & Machinery,Industrials,Group 1: Daily MACD < 0,1,False,0,0,4.6,-0.43290043290044045,-0.058,0.011,-0.069,0.382,0.333,42.5,4.72,4.91,4.78,4.38,3.67,True,False,8.63,5.91,65
+ADB,ADB,Industrial,Industrial,Group 1: Daily MACD < 0,1,False,0,6,1.07,-2.7272727272727337,-0.006,-0.021,0.015,0.099,0.03,50.6,1.04,1.05,1.13,0.99,0.77,True,False,6.45,3.63,65
+KGI,KGI,Finance & Securities,Financials,Group 1: Daily MACD < 0,1,False,0,10,4.82,-0.4132231404958553,-0.004,-0.023,0.02,0.105,0.118,55.5,4.77,4.76,4.87,4.8,4.48,True,False,6.12,5.88,65
+BLA,BLA,Insurance,Financials,Group 1: Daily MACD < 0,1,False,0,6,22.7,0.0,-0.34,-0.433,0.092,0.078,0.644,42.5,22.51,22.92,23.76,24.5,22.6,True,False,34.64,25.17,64
+CK,CK,Construction Services,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,17.1,-0.5813953488371992,-0.276,-0.239,-0.037,0.055,0.048,41.6,17.12,17.66,18.01,18.4,16.89,True,False,138.98,42.76,63
+SCL,SCL,Industrial,Industrial,Group 1: Daily MACD < 0,1,False,0,0,1.63,0.0,-0.004,0.011,-0.015,0.069,0.096,43.9,1.66,1.68,1.64,1.62,1.44,True,False,3.36,0.11,63
+CNT,CNT,Construction Services,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,3.12,1.2987012987013102,-0.018,0.007,-0.025,0.47,0.422,49.7,3.08,3.2,3.05,2.56,,False,False,3.15,2.97,63
+STP,STP,Industrial,Industrial,Group 1: Daily MACD < 0,1,False,0,11,11.5,0.0,-0.058,-0.1,0.042,0.104,0.008,51.4,11.39,11.4,11.74,11.75,11.07,True,False,0.29,0.26,63
+SAT,SAT,Automotive,Industrials,Group 1: Daily MACD < 0,1,False,0,0,15.9,-0.6249999999999978,-0.084,-0.06,-0.025,0.24,0.398,42.0,15.96,16.16,16.19,16.11,15.49,True,False,10.54,3.43,62
+NYT,NYT,Transportation & Logistics,Services,Group 1: Daily MACD < 0,1,False,0,7,3.9,0.0,-0.009,-0.011,0.002,0.03,0.145,45.7,3.9,3.91,3.95,3.97,3.8,True,False,3.56,1.8,61
+UBA,UBA,Services,Services,Group 1: Daily MACD < 0,1,False,0,0,1.28,0.0,-0.016,-0.009,-0.007,0.063,0.033,43.1,1.28,1.33,1.31,1.23,1.12,True,False,0.39,0.06,61
+GABLE,GABLE,Information & Communication Technology,Technology,Group 1: Daily MACD < 0,1,False,0,32,3.9,0.0,-0.013,-0.017,0.004,0.013,0.028,45.9,3.9,3.91,3.95,4.01,3.89,True,False,0.71,0.49,59
+S11,S11,Finance & Securities,Financials,Group 1: Daily MACD < 0,1,False,0,0,4.38,-0.454545454545463,-0.05,-0.049,-0.0,0.137,0.269,40.5,4.36,4.47,4.54,4.44,4.07,True,False,0.23,0.01,59
+SCGP,SCGP,Packaging,Industrials,Group 1: Daily MACD < 0,1,False,0,0,28.25,-3.4188034188034178,-0.272,-0.168,-0.105,1.483,0.294,39.7,29.32,29.65,29.81,29.51,24.89,True,False,275.45,436.64,58
+BA,BA,Transportation & Logistics,Services,Group 1: Daily MACD < 0,1,False,0,0,18.1,-4.232804232804222,-0.104,-0.044,-0.06,0.714,0.502,38.7,18.82,19.12,19.07,18.82,16.72,True,False,126.79,298.46,58
+TITLE,TITLE,Property Development,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,8.2,3.1446540880503138,-0.217,-0.196,-0.021,0.16,1.323,41.7,8.12,8.49,8.8,8.8,8.09,True,False,2.08,3.85,56
+SAUCE,SAUCE,Food & Beverage,Agro & Food Industry,Group 1: Daily MACD < 0,1,False,0,8,41.25,0.0,-0.005,-0.107,0.102,0.148,0.987,53.9,41.02,40.91,41.3,41.21,40.86,True,False,0.34,0.06,56
+EASTW,EASTW,Energy & Utilities,Resources,Group 1: Daily MACD < 0,1,False,0,0,4.46,0.0,-0.094,-0.041,-0.053,0.314,0.371,30.2,4.83,4.93,5.02,4.94,3.77,True,False,36.53,9.86,55
+SGP,SGP,Energy & Utilities,Resources,Group 1: Daily MACD < 0,1,False,0,0,8.75,-0.5681818181818232,-0.027,-0.004,-0.023,0.237,0.247,43.4,8.91,8.96,8.89,8.56,8.26,True,False,1.66,1.67,55
+PYLON,PYLON,Construction Services,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,3.82,-1.0362694300518172,-0.012,0.003,-0.015,0.195,0.336,41.3,3.87,3.92,3.87,3.76,3.33,True,False,1.25,0.75,55
+UMI,UMI,Construction Materials,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,0.88,1.1494252873563315,-0.011,-0.009,-0.002,0.02,0.002,43.3,0.88,0.91,0.91,0.92,0.82,True,False,0.84,0.03,55
+FTE,FTE,Industrial Materials & Machinery,Industrials,Group 1: Daily MACD < 0,1,False,0,0,2.66,0.7575757575757569,-0.011,-0.008,-0.003,0.118,0.284,47.4,2.67,2.68,2.69,2.68,2.33,True,False,0.49,0.04,55
+TSC,TSC,Automotive,Industrials,Group 1: Daily MACD < 0,1,False,0,7,15.0,0.0,-0.022,-0.049,0.028,0.064,0.322,50.7,14.93,14.96,15.12,15.09,14.89,True,False,0.27,0.65,55
+TRT,TRT,Industrial,Industrial,Group 1: Daily MACD < 0,1,False,0,0,11.8,-0.8403361344537785,-0.137,-0.126,-0.01,1.054,2.318,42.1,12.14,12.04,12.63,13.15,8.68,True,False,17.87,6.98,54
+SYNTEC,SYNTEC,Construction Services,Property & Construction,Group 1: Daily MACD < 0,1,False,0,7,1.79,0.0,-0.023,-0.027,0.004,0.024,0.035,43.3,1.78,1.81,1.87,1.83,1.74,True,False,0.88,0.13,54
+MDX,MDX,Energy & Utilities,Resources,Group 1: Daily MACD < 0,1,False,0,0,3.38,-4.519774011299438,-0.001,0.021,-0.022,0.223,0.023,37.6,3.57,3.56,3.52,3.37,2.85,True,False,4.06,3.61,53
+SRICHA,SRICHA,Construction Services,Property & Construction,Group 1: Daily MACD < 0,1,False,0,14,17.6,-0.5649717514124131,-0.028,-0.064,0.036,0.489,2.769,48.8,17.63,17.59,17.98,17.98,16.03,True,False,3.16,1.44,53
+TKS,TKS,Media & Publishing,Services,Group 1: Daily MACD < 0,1,False,0,0,7.85,-1.2578616352201366,-0.007,0.005,-0.012,0.29,0.126,43.5,7.94,7.95,7.96,7.71,7.06,True,False,0.82,0.87,53
+KUMWEL,KUMWEL,Industrial,Industrial,Group 1: Daily MACD < 0,1,False,0,0,2.04,0.0,-0.033,-0.026,-0.007,0.126,0.139,38.7,2.06,2.12,2.15,2.21,1.67,True,False,0.36,0.22,53
+NUT,NUT,Consumer Products,Consumer Products,Group 1: Daily MACD < 0,1,False,0,0,4.64,0.0,-0.064,-0.061,-0.003,0.07,0.083,37.1,4.65,4.76,4.89,4.89,4.43,True,False,0.2,0.04,53
+THANA,THANA,Property & Construction,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,1.58,0.6369426751592355,-0.004,-0.003,-0.001,0.029,0.04,51.4,1.57,1.58,1.58,,,False,False,0.07,0.01,53
+UKEM,UKEM,Industrial,Industrial,Group 1: Daily MACD < 0,1,False,0,0,1.17,-0.8474576271186418,-0.056,-0.048,-0.007,0.084,0.125,33.9,1.23,1.32,1.38,1.27,1.01,True,False,12.0,8.98,52
+ALT,ALT,Information & Communication Technology,Technology,Group 1: Daily MACD < 0,1,False,0,0,1.65,0.6097560975609762,-0.004,0.003,-0.007,0.071,0.076,46.6,1.67,1.69,1.68,1.72,1.43,True,False,7.24,1.99,51
+APP,APP,Technology,Technology,Group 1: Daily MACD < 0,1,False,0,0,3.28,-0.60606060606061,-0.004,0.037,-0.041,0.228,0.217,39.8,3.42,3.49,3.28,3.02,2.8,True,False,0.86,0.27,51
+FLOYD,FLOYD,Property & Construction,Property & Construction,Group 1: Daily MACD < 0,1,True,0,3,1.1,0.0,-0.007,-0.008,0.001,0.005,0.023,46.3,1.1,1.11,1.13,1.1,1.12,False,False,0.07,0.0,51
+AMATA,AMATA,Property Development,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,27.0,-6.086956521739129,-0.885,-0.419,-0.466,2.0,2.22,24.8,30.3,31.61,31.58,30.0,24.22,True,False,338.81,774.66,50
+PRM,PRM,Transportation & Logistics,Services,Group 1: Daily MACD < 0,1,False,0,8,8.65,-1.1428571428571344,-0.179,-0.221,0.042,0.099,0.548,39.7,8.72,8.85,9.41,9.36,8.56,True,False,39.08,20.94,50
+MGC,MGC,Automotive,Industrials,Group 1: Daily MACD < 0,1,False,0,0,6.5,0.0,-0.177,-0.175,-0.002,0.19,0.597,40.4,6.68,6.76,7.33,7.74,6.07,True,False,27.17,4.5,49
+IT,IT,Commerce,Services,Group 1: Daily MACD < 0,1,False,0,0,6.9,0.0,-0.04,-0.014,-0.025,0.461,0.709,42.6,7.05,7.1,7.19,7.09,5.49,True,False,1.01,0.26,49
+PSGC,PSGC,Property & Construction,Property & Construction,Group 1: Daily MACD < 0,1,False,0,7,4.82,0.4166666666666874,-0.158,-0.178,0.019,0.213,1.157,31.9,4.84,4.98,5.43,5.33,4.27,True,False,0.64,0.31,48
+SEAFCO,SEAFCO,Construction Services,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,2.76,-0.7194244604316502,-0.031,-0.022,-0.01,0.062,0.087,35.8,2.82,2.86,2.9,2.91,2.63,True,False,2.61,1.92,47
+VCOM,VCOM,Technology,Technology,Group 1: Daily MACD < 0,1,False,0,13,3.76,-1.0526315789473717,-0.022,-0.026,0.004,0.066,0.154,42.0,3.8,3.8,3.89,3.93,3.6,True,False,0.88,0.99,47
+BJCHI,BJCHI,Construction Services,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,3.08,0.0,-0.055,-0.055,-0.0,0.474,0.439,39.3,3.08,3.16,3.29,,,False,False,0.12,0.01,47
+KBSPIF,KBSPIF,Energy & Utilities,Resources,Group 1: Daily MACD < 0,1,False,0,6,9.3,-0.5347593582887611,-0.033,-0.036,0.004,0.122,0.29,38.7,9.34,9.38,9.48,9.54,8.98,True,False,0.96,1.0,45
+PTL,PTL,Packaging,Industrials,Group 1: Daily MACD < 0,1,False,0,0,13.7,-1.4388489208633115,-0.171,-0.164,-0.007,0.81,0.348,37.0,13.78,14.11,14.39,14.26,11.38,True,False,0.55,0.91,45
+ASW,ASW,Property Development,Property & Construction,Group 1: Daily MACD < 0,1,False,0,0,7.55,-0.6578947368421018,-0.047,-0.041,-0.006,0.158,0.034,31.6,7.62,7.67,7.8,7.59,7.21,True,False,0.45,0.3,45
+ASAP,ASAP,Automotive,Industrials,Group 1: Daily MACD < 0,1,False,0,0,1.99,0.0,-0.037,-0.022,-0.015,0.117,0.002,31.7,2.07,2.11,2.14,2.13,1.7,True,False,0.1,0.02,45
+NDR,NDR,Industrial,Industrial,Group 1: Daily MACD < 0,1,False,0,0,1.7,0.591715976331364,-0.037,-0.032,-0.005,0.04,0.017,37.6,1.72,1.77,1.8,1.81,,False,False,0.13,0.05,43
+CPT,CPT,Industrial Materials & Machinery,Industrials,Group 1: Daily MACD < 0,1,False,0,0,1.08,-0.9174311926605561,-0.006,0.005,-0.011,0.026,0.051,35.1,1.12,1.14,1.09,1.06,,False,False,0.27,0.2,41
+SLP,SLP,Packaging,Industrials,Group 1: Daily MACD < 0,1,False,0,0,0.43,-2.2727272727272707,-0.017,-0.012,-0.005,0.006,0.002,36.4,0.45,0.48,0.49,,,False,False,0.08,0.04,38
+MC,MC,Commerce,Services,Group 1: Daily MACD < 0,1,False,0,0,11.2,0.0,-0.023,-0.007,-0.016,0.007,0.112,37.2,11.38,11.37,11.45,11.53,11.39,False,False,25.68,41.81,37
+VARO,VARO,Industrial Materials & Machinery,Industrials,Group 1: Daily MACD < 0,1,False,0,0,5.8,0.0,-0.021,-0.012,-0.009,0.445,0.144,47.4,5.83,5.9,5.86,,,False,False,0.15,0.02,37
+MIDA,MIDA,Commerce,Services,Group 1: Daily MACD < 0,1,False,0,0,0.41,-2.3809523809523836,-0.009,-0.006,-0.004,0.028,0.018,34.8,0.43,0.45,0.45,0.45,,False,False,0.22,0.19,35
+TSTH,TSTH,Steel and Metal Products,Industrials,Group 1: Daily MACD < 0,1,False,0,0,0.87,-3.3333333333333326,-0.016,-0.013,-0.003,0.02,0.041,27.7,0.92,0.94,0.97,0.95,0.86,True,False,1.01,2.51,34
+CPI,CPI,Food & Beverage,Agro & Food Industry,Group 1: Daily MACD < 0,1,False,0,0,3.46,-1.1428571428571455,-0.004,-0.001,-0.004,0.018,0.183,40.0,3.51,3.51,3.5,3.52,3.47,False,False,0.28,0.78,30
+CTW,CTW,Industrial Materials & Machinery,Industrials,Group 1: Daily MACD < 0,1,False,0,0,5.9,0.0,-0.177,-0.107,-0.07,0.372,0.6,20.8,6.22,6.47,6.57,6.62,,False,False,0.39,0.15,27
+TVH,TVH,Insurance,Financials,Group 1: Daily MACD < 0,1,False,0,6,9.7,-1.5228426395939132,-0.366,-0.427,0.061,0.017,0.475,29.1,9.78,10.21,11.09,11.0,10.04,False,False,0.63,0.04,22
