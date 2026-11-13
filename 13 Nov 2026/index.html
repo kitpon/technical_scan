@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SET / mai Multi-Timeframe MACD Scan Summary</title>
+    <style>
+        :root {
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --primary: #2563EB;
+            --primary-light: #EFF6FF;
+            --success: #059669;
+            --success-light: #ECFDF5;
+            --danger: #DC2626;
+            --danger-light: #FEF2F2;
+            --warning: #D97706;
+            --warning-light: #FFFBEB;
+            --purple: #7C3AED;
+            --purple-light: #F5F3FF;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 24px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+        header {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 16px;
+        }
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1E293B;
+            margin-bottom: 6px;
+        }
+        .header-title p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+            align-items: start;
+        }
+        .stat-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 16px;
+            min-width: 120px;
+            text-align: center;
+        }
+        .stat-card .val {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .stat-card .lbl {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .stat-card.wide {
+            min-width: 0;
+        }
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 8px;
+            justify-content: center;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 4px;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            color: #0F172A;
+            cursor: pointer;
+            line-height: 1.5;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .chip:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(15,23,42,0.12);
+        }
+        .chip .c {
+            font-size: 9.5px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+        .chip.up {
+            background: #ECFDF5;
+            border-color: #A7F3D0;
+            color: #047857;
+        }
+        .chip.down {
+            background: #FEF2F2;
+            border-color: #FECACA;
+            color: #B91C1C;
+        }
+        .chip.flat {
+            background: #F8FAFC;
+            color: #475569;
+        }
+        .chip-empty {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1E293B;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .search-box {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13.5px;
+            width: 240px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .btn-group {
+            display: flex;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2px;
+            gap: 2px;
+        }
+        .filter-btn {
+            border: none;
+            background: transparent;
+            padding: 6px 14px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .filter-btn:hover {
+            color: var(--text-main);
+        }
+        .filter-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        th {
+            background: #F1F5F9;
+            color: #475569;
+            font-weight: 700;
+            font-size: 11.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+        }
+        th:hover {
+            background: #E2E8F0;
+            color: var(--text-main);
+        }
+        th.sorted-asc::after { content: " ↑"; color: var(--primary); }
+        th.sorted-desc::after { content: " ↓"; color: var(--primary); }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            color: #334155;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: #F8FAFC;
+        }
+        .sym-cell {
+            font-weight: 800;
+            font-size: 14px;
+            color: #1E293B;
+        }
+        .sym-name {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-top: 1px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-g2 {
+            background: #DCFCE7;
+            color: #15803D;
+            border: 1px solid #BBF7D0;
+        }
+        .badge-turnaround {
+            background: #E0E7FF;
+            color: #4338CA;
+            border: 1px solid #C7D2FE;
+        }
+        .badge-g1 {
+            background: #F1F5F9;
+            color: #475569;
+            border: 1px solid #E2E8F0;
+        }
+        .badge-top9 {
+            background: #FEF3C7;
+            color: #B45309;
+            border: 1px solid #FDE68A;
+            margin-left: 6px;
+            font-size: 10px;
+        }
+        .score-pill {
+            display: inline-block;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 11.5px;
+        }
+        .score-high { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+        .score-mid { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+        .score-low { background: #F8FAFC; color: #64748B; border: 1px solid #E2E8F0; }
+
+        .pos { color: var(--success); font-weight: 600; }
+        .neg { color: var(--danger); font-weight: 600; }
+        .neutral { color: var(--text-muted); }
+
+        /* Chart Gallery */
+        .chart-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .chart-tab {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .chart-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .chart-tab.active {
+            background: var(--primary);
+            color: #FFFFFF;
+            border-color: var(--primary);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+        .chart-viewport {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .chart-viewport img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+            border: 1px solid #F1F5F9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-title">
+                <h1>SET / mai Multi-Timeframe MACD Scanner</h1>
+                <p>Criteria: Monthly MACD &gt; 0 &bull; Weekly MACD &gt; 0 &bull; Daily MACD Pullbacks &amp; Fresh Crossovers &bull; ข้อมูล ณ 13 Nov 2026</p>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <div class="val" id="stat-total">126</div>
+                    <div class="lbl">Total Matches</div>
+                </div>
+                <div class="stat-card wide">
+                    <div class="val" style="color: #059669;" id="stat-g2">16</div>
+                    <div class="lbl">Fresh MACD &gt; 0</div>
+                    <div class="chips" id="chips-g2"></div>
+                </div>
+                <div class="stat-card wide">
+                    <div class="val" style="color: #4338CA;" id="stat-turnaround">33</div>
+                    <div class="lbl">Early Turnaround</div>
+                    <div class="chips" id="chips-turnaround"></div>
+                </div>
+                <div class="stat-card wide">
+                    <div class="val" style="color: #D97706;" id="stat-top9">9</div>
+                    <div class="lbl">Top Focus</div>
+                    <div class="chips" id="chips-top9"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 3x3 Chart Viewer Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title">🖼️ 3x3 Grid Technical Charts (16:9 Scale &bull; White Background)</div>
+                <div style="font-size: 13px; color: var(--text-muted);">Switch tabs to inspect each 3x3 chart page</div>
+            </div>
+            <div class="chart-nav">
+                <button class="chart-tab active" onclick="loadChart('chart_3x3_top_focus.png', this)">🎯 Top 9 Focus</button>
+                <button class="chart-tab" onclick="loadChart('chart_3x3_group2_and_turnaround.png', this)">⚡ Group 2 &amp; Turnarounds</button>
+                <button class="chart-tab" onclick="loadChart('chart_3x3_group1_pullbacks.png', this)">🔄 Group 1 Pullbacks</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_01.png&quot;, this)">Page 1</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_02.png&quot;, this)">Page 2</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_03.png&quot;, this)">Page 3</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_04.png&quot;, this)">Page 4</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_05.png&quot;, this)">Page 5</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_06.png&quot;, this)">Page 6</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_07.png&quot;, this)">Page 7</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_08.png&quot;, this)">Page 8</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_09.png&quot;, this)">Page 9</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_10.png&quot;, this)">Page 10</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_11.png&quot;, this)">Page 11</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_12.png&quot;, this)">Page 12</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_13.png&quot;, this)">Page 13</button>
+                <button class="chart-tab" onclick="loadChart(&quot;chart_3x3_page_14.png&quot;, this)">Page 14</button>
+            </div>
+            <div class="chart-viewport">
+                <img id="main-chart-img" src="chart_3x3_top_focus.png" alt="Technical Chart Grid">
+            </div>
+        </div>
+
+        <!-- Interactive Summary Table Section -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title">📊 Multi-Timeframe Technical Scan Summary Table (<span id="showing-count">126</span> Stocks)</div>
+                <div class="controls">
+                    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search symbol or sector..." oninput="filterTable()">
+                    <div class="btn-group">
+                        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All (126)</button>
+                        <button class="filter-btn" data-filter="top9" onclick="setFilter('top9', this)">🎯 Top 9 Focus</button>
+                        <button class="filter-btn" data-filter="g2" onclick="setFilter('g2', this)">🟢 Group 2 (&le;5d)</button>
+                        <button class="filter-btn" data-filter="turnaround" onclick="setFilter('turnaround', this)">🔵 Early Turnaround</button>
+                        <button class="filter-btn" data-filter="liquid" onclick="setFilter('liquid', this)">💧 Liquid &gt;10M</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="stocksTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('idx')">#</th>
+                            <th onclick="sortTable('symbol')">Symbol</th>
+                            <th onclick="sortTable('sector')">Sector</th>
+                            <th onclick="sortTable('group_tag')">Category / Signal</th>
+                            <th onclick="sortTable('tech_score')">Score</th>
+                            <th onclick="sortTable('close')">Price</th>
+                            <th onclick="sortTable('chg_1d')">1D Chg</th>
+                            <th onclick="sortTable('d_macd')">Daily MACD</th>
+                            <th onclick="sortTable('d_hist')">Daily Hist</th>
+                            <th onclick="sortTable('w_macd')">Weekly MACD</th>
+                            <th onclick="sortTable('m_macd')">Monthly MACD</th>
+                            <th onclick="sortTable('rsi14')">RSI(14)</th>
+                            <th onclick="sortTable('avg_val20_m')">20D Avg Val (MB)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const rawData = [{"idx": 1, "symbol": "STECON", "name": "STECON", "sector": "Construction Services", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": true, "is_turnaround": false, "close": 18.6, "chg_1d": -0.5347593582887611, "days_macd_pos": 2, "days_hist_pos": 7, "d_macd": 0.089, "d_sig": -0.097, "d_hist": 0.186, "w_macd": 0.967, "m_macd": 2.77, "rsi14": 57.7, "ma10": 17.79, "ma25": 17.57, "ma55": 18.07, "ma89": 18.05, "ma200": 15.02, "above_ma200": true, "avg_val20_m": 288.1, "tech_score": 100}, {"idx": 2, "symbol": "BA", "name": "BA", "sector": "Transportation & Logistics", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": true, "is_turnaround": false, "close": 19.8, "chg_1d": -0.5025125628140614, "days_macd_pos": 2, "days_hist_pos": 6, "d_macd": 0.143, "d_sig": -0.041, "d_hist": 0.184, "w_macd": 0.674, "m_macd": 0.636, "rsi14": 59.7, "ma10": 18.83, "ma25": 18.82, "ma55": 18.96, "ma89": 18.91, "ma200": 16.91, "above_ma200": true, "avg_val20_m": 156.14, "tech_score": 100}, {"idx": 3, "symbol": "AOT", "name": "AOT", "sector": "Transportation & Logistics", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": true, "is_turnaround": false, "close": 61.75, "chg_1d": 0.8163265306122547, "days_macd_pos": 3, "days_hist_pos": 15, "d_macd": 0.226, "d_sig": -0.068, "d_hist": 0.294, "w_macd": 0.93, "m_macd": 2.092, "rsi14": 58.0, "ma10": 60.5, "ma25": 59.54, "ma55": 61.0, "ma89": 62.17, "ma200": 57.68, "above_ma200": true, "avg_val20_m": 1639.27, "tech_score": 94}, {"idx": 4, "symbol": "KGEN", "name": "KGEN", "sector": "Services", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": true, "is_turnaround": false, "close": 1.87, "chg_1d": -0.5319148936170137, "days_macd_pos": 5, "days_hist_pos": 6, "d_macd": 0.072, "d_sig": 0.035, "d_hist": 0.036, "w_macd": 0.049, "m_macd": 0.178, "rsi14": 66.1, "ma10": 1.69, "ma25": 1.61, "ma55": 1.57, "ma89": 1.64, "ma200": 1.54, "above_ma200": true, "avg_val20_m": 48.69, "tech_score": 93}, {"idx": 5, "symbol": "ERW", "name": "ERW", "sector": "Tourism & Leisure", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": true, "is_turnaround": false, "close": 3.72, "chg_1d": 0.0, "days_macd_pos": 3, "days_hist_pos": 6, "d_macd": 0.016, "d_sig": -0.002, "d_hist": 0.017, "w_macd": 0.19, "m_macd": 0.004, "rsi14": 56.6, "ma10": 3.63, "ma25": 3.61, "ma55": 3.66, "ma89": 3.55, "ma200": 3.1, "above_ma200": true, "avg_val20_m": 65.19, "tech_score": 92}, {"idx": 6, "symbol": "WHAUP", "name": "WHAUP", "sector": "Energy & Utilities", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": true, "is_turnaround": false, "close": 7.25, "chg_1d": -0.6849315068493178, "days_macd_pos": 3, "days_hist_pos": 12, "d_macd": 0.054, "d_sig": -0.021, "d_hist": 0.075, "w_macd": 0.27, "m_macd": 0.857, "rsi14": 56.5, "ma10": 6.98, "ma25": 6.87, "ma55": 7.07, "ma89": 7.32, "ma200": 6.07, "above_ma200": true, "avg_val20_m": 96.97, "tech_score": 91}, {"idx": 7, "symbol": "WINNER", "name": "WINNER", "sector": "Agro & Food Industry", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": true, "is_turnaround": false, "close": 2.24, "chg_1d": 0.0, "days_macd_pos": 3, "days_hist_pos": 3, "d_macd": 0.005, "d_sig": 0.002, "d_hist": 0.003, "w_macd": 0.023, "m_macd": 0.02, "rsi14": 58.8, "ma10": 2.22, "ma25": 2.21, "ma55": 2.21, "ma89": 2.21, "ma200": 2.16, "above_ma200": true, "avg_val20_m": 0.15, "tech_score": 87}, {"idx": 8, "symbol": "TFG", "name": "TFG", "sector": "Food & Beverage", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": true, "is_turnaround": false, "close": 9.7, "chg_1d": -0.5128205128205221, "days_macd_pos": 3, "days_hist_pos": 15, "d_macd": 0.029, "d_sig": -0.007, "d_hist": 0.035, "w_macd": 0.248, "m_macd": 1.506, "rsi14": 54.8, "ma10": 9.6, "ma25": 9.43, "ma55": 9.64, "ma89": 9.83, "ma200": 8.77, "above_ma200": true, "avg_val20_m": 142.71, "tech_score": 84}, {"idx": 9, "symbol": "S11", "name": "S11", "sector": "Finance & Securities", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": true, "is_turnaround": false, "close": 4.78, "chg_1d": -1.6460905349794277, "days_macd_pos": 2, "days_hist_pos": 11, "d_macd": 0.043, "d_sig": -0.008, "d_hist": 0.051, "w_macd": 0.145, "m_macd": 0.312, "rsi14": 69.6, "ma10": 4.5, "ma25": 4.43, "ma55": 4.51, "ma89": 4.49, "ma200": 4.14, "above_ma200": true, "avg_val20_m": 0.37, "tech_score": 83}, {"idx": 10, "symbol": "ROJNA", "name": "ROJNA", "sector": "Property Development", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": false, "is_turnaround": false, "close": 5.8, "chg_1d": 0.0, "days_macd_pos": 2, "days_hist_pos": 2, "d_macd": 0.006, "d_sig": -0.002, "d_hist": 0.009, "w_macd": 0.094, "m_macd": 0.02, "rsi14": 54.5, "ma10": 5.72, "ma25": 5.72, "ma55": 5.73, "ma89": 5.84, "ma200": 5.45, "above_ma200": true, "avg_val20_m": 9.82, "tech_score": 80}, {"idx": 11, "symbol": "GABLE", "name": "GABLE", "sector": "Information & Communication Technology", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": false, "is_turnaround": false, "close": 4.18, "chg_1d": 4.499999999999993, "days_macd_pos": 1, "days_hist_pos": 3, "d_macd": 0.022, "d_sig": -0.004, "d_hist": 0.025, "w_macd": 0.022, "m_macd": 0.054, "rsi14": 75.4, "ma10": 3.92, "ma25": 3.91, "ma55": 3.92, "ma89": 4.01, "ma200": 3.92, "above_ma200": true, "avg_val20_m": 1.26, "tech_score": 79}, {"idx": 12, "symbol": "LHFG", "name": "LHFG", "sector": "Banking", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": false, "is_turnaround": false, "close": 1.24, "chg_1d": 0.8130081300812941, "days_macd_pos": 3, "days_hist_pos": 1, "d_macd": 0.001, "d_sig": 0.001, "d_hist": 0.0, "w_macd": 0.03, "m_macd": 0.09, "rsi14": 53.3, "ma10": 1.23, "ma25": 1.23, "ma55": 1.23, "ma89": 1.24, "ma200": 1.14, "above_ma200": true, "avg_val20_m": 4.42, "tech_score": 78}, {"idx": 13, "symbol": "DMT", "name": "DMT", "sector": "Transportation & Logistics", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": false, "is_turnaround": false, "close": 12.1, "chg_1d": 0.0, "days_macd_pos": 5, "days_hist_pos": 7, "d_macd": 0.015, "d_sig": 0.002, "d_hist": 0.013, "w_macd": 0.167, "m_macd": 0.251, "rsi14": 53.7, "ma10": 12.06, "ma25": 12.03, "ma55": 12.05, "ma89": 12.14, "ma200": 11.59, "above_ma200": true, "avg_val20_m": 3.07, "tech_score": 78}, {"idx": 14, "symbol": "GTB", "name": "GTB", "sector": "Industrial", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": false, "is_turnaround": false, "close": 0.78, "chg_1d": 1.2987012987013102, "days_macd_pos": 1, "days_hist_pos": 0, "d_macd": 0.0, "d_sig": 0.001, "d_hist": -0.001, "w_macd": 0.018, "m_macd": 0.009, "rsi14": 51.2, "ma10": 0.77, "ma25": 0.78, "ma55": 0.77, "ma89": 0.75, "ma200": 0.73, "above_ma200": true, "avg_val20_m": 0.07, "tech_score": 78}, {"idx": 15, "symbol": "SCP", "name": "SCP", "sector": "Construction Materials", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": false, "is_turnaround": false, "close": 9.35, "chg_1d": -0.5319148936170248, "days_macd_pos": 2, "days_hist_pos": 0, "d_macd": 0.002, "d_sig": 0.006, "d_hist": -0.004, "w_macd": 0.188, "m_macd": 0.745, "rsi14": 49.0, "ma10": 9.35, "ma25": 9.37, "ma55": 9.31, "ma89": 9.24, "ma200": 8.89, "above_ma200": true, "avg_val20_m": 0.63, "tech_score": 73}, {"idx": 16, "symbol": "SEAFCO", "name": "SEAFCO", "sector": "Construction Services", "group_id": 2, "group_tag": "Group 2 (Fresh MACD > 0)", "tag_class": "badge-g2", "is_top9": false, "is_turnaround": false, "close": 2.88, "chg_1d": -2.0408163265306145, "days_macd_pos": 3, "days_hist_pos": 7, "d_macd": 0.008, "d_sig": -0.006, "d_hist": 0.014, "w_macd": 0.053, "m_macd": 0.096, "rsi14": 51.9, "ma10": 2.86, "ma25": 2.85, "ma55": 2.88, "ma89": 2.89, "ma200": 2.67, "above_ma200": true, "avg_val20_m": 2.57, "tech_score": 72}, {"idx": 17, "symbol": "HANA", "name": "HANA", "sector": "Electronic Components", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 48.0, "chg_1d": 20.75471698113207, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -2.232, "d_sig": -1.96, "d_hist": -0.272, "w_macd": 3.798, "m_macd": 3.557, "rsi14": 54.9, "ma10": 41.88, "ma25": 46.83, "ma55": 47.86, "ma89": 44.46, "ma200": 35.03, "above_ma200": true, "avg_val20_m": 1435.73, "tech_score": 88}, {"idx": 18, "symbol": "APP", "name": "APP", "sector": "Technology", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 3.52, "chg_1d": 4.761904761904767, "days_macd_pos": 0, "days_hist_pos": 1, "d_macd": -0.001, "d_sig": -0.007, "d_hist": 0.006, "w_macd": 0.228, "m_macd": 0.266, "rsi14": 61.0, "ma10": 3.37, "ma25": 3.4, "ma55": 3.37, "ma89": 3.12, "ma200": 2.84, "above_ma200": true, "avg_val20_m": 0.5, "tech_score": 87}, {"idx": 19, "symbol": "SCL", "name": "SCL", "sector": "Industrial", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 1.69, "chg_1d": 3.6809815950920255, "days_macd_pos": 0, "days_hist_pos": 1, "d_macd": -0.008, "d_sig": -0.011, "d_hist": 0.003, "w_macd": 0.059, "m_macd": 0.104, "rsi14": 59.8, "ma10": 1.62, "ma25": 1.66, "ma55": 1.64, "ma89": 1.64, "ma200": 1.46, "above_ma200": true, "avg_val20_m": 0.21, "tech_score": 87}, {"idx": 20, "symbol": "EASON", "name": "EASON", "sector": "Automotive", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 1.25, "chg_1d": 3.3057851239669533, "days_macd_pos": 0, "days_hist_pos": 2, "d_macd": -0.006, "d_sig": -0.01, "d_hist": 0.004, "w_macd": 0.025, "m_macd": 0.003, "rsi14": 62.3, "ma10": 1.2, "ma25": 1.22, "ma55": 1.23, "ma89": 1.21, "ma200": 1.15, "above_ma200": true, "avg_val20_m": 0.16, "tech_score": 87}, {"idx": 21, "symbol": "ESTAR", "name": "ESTAR", "sector": "Property Development", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 0.25, "chg_1d": 4.166666666666674, "days_macd_pos": 0, "days_hist_pos": 1, "d_macd": -0.001, "d_sig": -0.001, "d_hist": 0.0, "w_macd": 0.006, "m_macd": 0.001, "rsi14": 58.2, "ma10": 0.24, "ma25": 0.24, "ma55": 0.25, "ma89": 0.24, "ma200": 0.23, "above_ma200": true, "avg_val20_m": 0.11, "tech_score": 87}, {"idx": 22, "symbol": "BAY", "name": "BAY", "sector": "Banking", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 39.25, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 1, "d_macd": -0.041, "d_sig": -0.063, "d_hist": 0.022, "w_macd": 1.401, "m_macd": 3.605, "rsi14": 52.4, "ma10": 38.62, "ma25": 39.22, "ma55": 39.08, "ma89": 40.43, "ma200": 34.11, "above_ma200": true, "avg_val20_m": 38.95, "tech_score": 86}, {"idx": 23, "symbol": "MBK", "name": "MBK", "sector": "Property Development", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 20.7, "chg_1d": 0.9756097560975618, "days_macd_pos": 0, "days_hist_pos": 19, "d_macd": -0.044, "d_sig": -0.207, "d_hist": 0.163, "w_macd": 0.158, "m_macd": 0.9, "rsi14": 60.0, "ma10": 19.81, "ma25": 19.76, "ma55": 20.64, "ma89": 21.18, "ma200": 19.51, "above_ma200": true, "avg_val20_m": 47.21, "tech_score": 84}, {"idx": 24, "symbol": "GUNKUL", "name": "GUNKUL", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 4.94, "chg_1d": -1.19999999999999, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -0.028, "d_sig": -0.057, "d_hist": 0.029, "w_macd": 0.345, "m_macd": 0.645, "rsi14": 51.1, "ma10": 4.8, "ma25": 4.9, "ma55": 5.01, "ma89": 5.01, "ma200": 3.78, "above_ma200": true, "avg_val20_m": 359.48, "tech_score": 83}, {"idx": 25, "symbol": "TISCO", "name": "TISCO", "sector": "Banking", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 125.0, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 4, "d_macd": -0.164, "d_sig": -0.235, "d_hist": 0.072, "w_macd": 2.04, "m_macd": 7.075, "rsi14": 50.0, "ma10": 124.6, "ma25": 124.74, "ma55": 125.57, "ma89": 126.1, "ma200": 119.07, "above_ma200": true, "avg_val20_m": 278.76, "tech_score": 83}, {"idx": 26, "symbol": "SEAOIL", "name": "SEAOIL", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.56, "chg_1d": 4.093567251461994, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.027, "d_sig": -0.018, "d_hist": -0.009, "w_macd": 0.075, "m_macd": 0.164, "rsi14": 55.9, "ma10": 3.44, "ma25": 3.55, "ma55": 3.49, "ma89": 3.42, "ma200": 3.37, "above_ma200": true, "avg_val20_m": 1.74, "tech_score": 82}, {"idx": 27, "symbol": "SMT", "name": "SMT", "sector": "Electronic Components", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 6.7, "chg_1d": 0.7518796992481258, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.032, "d_sig": 0.104, "d_hist": -0.136, "w_macd": 1.074, "m_macd": 1.038, "rsi14": 48.0, "ma10": 6.82, "ma25": 7.15, "ma55": 6.49, "ma89": 5.8, "ma200": 3.65, "above_ma200": true, "avg_val20_m": 177.43, "tech_score": 80}, {"idx": 28, "symbol": "AMATA", "name": "AMATA", "sector": "Property Development", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 27.75, "chg_1d": -2.631578947368418, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -1.055, "d_sig": -1.269, "d_hist": 0.214, "w_macd": 1.176, "m_macd": 2.155, "rsi14": 45.3, "ma10": 26.6, "ma25": 28.86, "ma55": 30.85, "ma89": 29.98, "ma200": 24.82, "above_ma200": true, "avg_val20_m": 411.34, "tech_score": 79}, {"idx": 29, "symbol": "KKP", "name": "KKP", "sector": "Banking", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 114.5, "chg_1d": 0.4385964912280604, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.314, "d_sig": -0.016, "d_hist": -0.298, "w_macd": 6.804, "m_macd": 15.674, "rsi14": 49.8, "ma10": 113.75, "ma25": 114.72, "ma55": 115.2, "ma89": 113.23, "ma200": 94.51, "above_ma200": true, "avg_val20_m": 764.04, "tech_score": 78}, {"idx": 30, "symbol": "ALT", "name": "ALT", "sector": "Information & Communication Technology", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 1.65, "chg_1d": -2.3668639053254448, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -0.008, "d_sig": -0.018, "d_hist": 0.009, "w_macd": 0.052, "m_macd": 0.077, "rsi14": 51.4, "ma10": 1.6, "ma25": 1.64, "ma55": 1.64, "ma89": 1.7, "ma200": 1.46, "above_ma200": true, "avg_val20_m": 4.31, "tech_score": 78}, {"idx": 31, "symbol": "UBA", "name": "UBA", "sector": "Services", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 1.28, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -0.013, "d_sig": -0.018, "d_hist": 0.005, "w_macd": 0.051, "m_macd": 0.04, "rsi14": 50.5, "ma10": 1.25, "ma25": 1.28, "ma55": 1.32, "ma89": 1.25, "ma200": 1.14, "above_ma200": true, "avg_val20_m": 0.15, "tech_score": 76}, {"idx": 32, "symbol": "SPCG", "name": "SPCG", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 10.6, "chg_1d": 0.952380952380949, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.253, "d_sig": -0.21, "d_hist": -0.043, "w_macd": 0.496, "m_macd": 0.102, "rsi14": 43.1, "ma10": 10.52, "ma25": 11.24, "ma55": 11.18, "ma89": 10.48, "ma200": 9.74, "above_ma200": true, "avg_val20_m": 56.91, "tech_score": 75}, {"idx": 33, "symbol": "SAT", "name": "SAT", "sector": "Automotive", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 15.9, "chg_1d": -0.6249999999999978, "days_macd_pos": 0, "days_hist_pos": 4, "d_macd": -0.053, "d_sig": -0.088, "d_hist": 0.036, "w_macd": 0.17, "m_macd": 0.407, "rsi14": 48.2, "ma10": 15.8, "ma25": 15.93, "ma55": 16.08, "ma89": 16.12, "ma200": 15.54, "above_ma200": true, "avg_val20_m": 10.54, "tech_score": 73}, {"idx": 34, "symbol": "ADB", "name": "ADB", "sector": "Industrial", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 1.08, "chg_1d": 3.846153846153855, "days_macd_pos": 0, "days_hist_pos": 17, "d_macd": -0.0, "d_sig": -0.003, "d_hist": 0.003, "w_macd": 0.09, "m_macd": 0.046, "rsi14": 52.2, "ma10": 1.07, "ma25": 1.04, "ma55": 1.11, "ma89": 1.03, "ma200": 0.8, "above_ma200": true, "avg_val20_m": 6.96, "tech_score": 73}, {"idx": 35, "symbol": "SRICHA", "name": "SRICHA", "sector": "Construction Services", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 17.7, "chg_1d": 1.1428571428571344, "days_macd_pos": 0, "days_hist_pos": 1, "d_macd": -0.023, "d_sig": -0.029, "d_hist": 0.006, "w_macd": 0.414, "m_macd": 2.752, "rsi14": 53.5, "ma10": 17.58, "ma25": 17.58, "ma55": 17.67, "ma89": 17.88, "ma200": 16.45, "above_ma200": true, "avg_val20_m": 3.17, "tech_score": 73}, {"idx": 36, "symbol": "KCE", "name": "KCE", "sector": "Electronic Components", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 58.25, "chg_1d": -1.6877637130801704, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -2.997, "d_sig": -1.284, "d_hist": -1.713, "w_macd": 8.411, "m_macd": 7.699, "rsi14": 36.9, "ma10": 63.28, "ma25": 69.7, "ma55": 66.52, "ma89": 58.2, "ma200": 40.84, "above_ma200": true, "avg_val20_m": 2302.11, "tech_score": 72}, {"idx": 37, "symbol": "KTB", "name": "KTB", "sector": "Banking", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 42.75, "chg_1d": 1.183431952662728, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.222, "d_sig": -0.108, "d_hist": -0.113, "w_macd": 1.84, "m_macd": 5.913, "rsi14": 47.8, "ma10": 42.75, "ma25": 42.91, "ma55": 43.35, "ma89": 43.1, "ma200": 37.68, "above_ma200": true, "avg_val20_m": 2246.44, "tech_score": 72}, {"idx": 38, "symbol": "TTB", "name": "TTB", "sector": "Banking", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 2.7, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 2, "d_macd": -0.061, "d_sig": -0.065, "d_hist": 0.004, "w_macd": 0.082, "m_macd": 0.275, "rsi14": 39.3, "ma10": 2.69, "ma25": 2.77, "ma55": 2.9, "ma89": 2.89, "ma200": 2.53, "above_ma200": true, "avg_val20_m": 1081.67, "tech_score": 72}, {"idx": 39, "symbol": "SPRC", "name": "SPRC", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 13.2, "chg_1d": -2.222222222222225, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.344, "d_sig": -0.191, "d_hist": -0.153, "w_macd": 1.639, "m_macd": 1.558, "rsi14": 39.4, "ma10": 13.49, "ma25": 14.6, "ma55": 14.1, "ma89": 12.59, "ma200": 9.57, "above_ma200": true, "avg_val20_m": 593.84, "tech_score": 72}, {"idx": 40, "symbol": "SCGP", "name": "SCGP", "sector": "Packaging", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 27.0, "chg_1d": -0.917431192660545, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.737, "d_sig": -0.72, "d_hist": -0.017, "w_macd": 0.833, "m_macd": 0.291, "rsi14": 41.5, "ma10": 26.8, "ma25": 28.29, "ma55": 29.16, "ma89": 29.41, "ma200": 25.36, "above_ma200": true, "avg_val20_m": 250.9, "tech_score": 72}, {"idx": 41, "symbol": "EPG", "name": "EPG", "sector": "Construction Materials", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 5.8, "chg_1d": 2.65486725663715, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.19, "d_sig": -0.116, "d_hist": -0.074, "w_macd": 0.346, "m_macd": 0.297, "rsi14": 43.7, "ma10": 5.76, "ma25": 6.23, "ma55": 6.15, "ma89": 6.17, "ma200": 4.9, "above_ma200": true, "avg_val20_m": 100.54, "tech_score": 72}, {"idx": 42, "symbol": "AKR", "name": "AKR", "sector": "Industrial Materials & Machinery", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 1.02, "chg_1d": -0.9708737864077666, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.008, "d_sig": -0.006, "d_hist": -0.001, "w_macd": 0.035, "m_macd": 0.016, "rsi14": 45.1, "ma10": 1.01, "ma25": 1.05, "ma55": 1.03, "ma89": 0.99, "ma200": 0.93, "above_ma200": true, "avg_val20_m": 10.82, "tech_score": 72}, {"idx": 43, "symbol": "NYT", "name": "NYT", "sector": "Transportation & Logistics", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 3.9, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -0.009, "d_sig": -0.014, "d_hist": 0.005, "w_macd": 0.019, "m_macd": 0.145, "rsi14": 51.9, "ma10": 3.87, "ma25": 3.89, "ma55": 3.91, "ma89": 3.97, "ma200": 3.85, "above_ma200": true, "avg_val20_m": 3.9, "tech_score": 72}, {"idx": 44, "symbol": "BBGI", "name": "BBGI", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 6.05, "chg_1d": -0.8196721311475419, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.174, "d_sig": -0.081, "d_hist": -0.094, "w_macd": 0.581, "m_macd": 0.345, "rsi14": 41.7, "ma10": 6.18, "ma25": 6.64, "ma55": 6.48, "ma89": 5.99, "ma200": 4.76, "above_ma200": true, "avg_val20_m": 30.0, "tech_score": 71}, {"idx": 45, "symbol": "VCOM", "name": "VCOM", "sector": "Technology", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 3.8, "chg_1d": 1.6042780748662944, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -0.019, "d_sig": -0.025, "d_hist": 0.006, "w_macd": 0.045, "m_macd": 0.163, "rsi14": 52.9, "ma10": 3.75, "ma25": 3.78, "ma55": 3.83, "ma89": 3.91, "ma200": 3.64, "above_ma200": true, "avg_val20_m": 0.55, "tech_score": 70}, {"idx": 46, "symbol": "MOONG", "name": "MOONG", "sector": "Consumer Products", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 2.28, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 2, "d_macd": -0.009, "d_sig": -0.01, "d_hist": 0.001, "w_macd": 0.008, "m_macd": 0.03, "rsi14": 49.8, "ma10": 2.27, "ma25": 2.28, "ma55": 2.29, "ma89": 2.33, "ma200": 2.27, "above_ma200": true, "avg_val20_m": 0.12, "tech_score": 70}, {"idx": 47, "symbol": "LOXLEY", "name": "LOXLEY", "sector": "Commerce", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 1.76, "chg_1d": -0.5649717514124353, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.005, "d_sig": -0.004, "d_hist": -0.0, "w_macd": 0.083, "m_macd": 0.059, "rsi14": 49.3, "ma10": 1.75, "ma25": 1.78, "ma55": 1.76, "ma89": 1.67, "ma200": 1.52, "above_ma200": true, "avg_val20_m": 7.9, "tech_score": 69}, {"idx": 48, "symbol": "GPI", "name": "GPI", "sector": "Media & Publishing", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 1.78, "chg_1d": 0.5649717514124353, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.006, "d_sig": -0.006, "d_hist": -0.0, "w_macd": 0.018, "m_macd": 0.032, "rsi14": 53.0, "ma10": 1.76, "ma25": 1.78, "ma55": 1.78, "ma89": 1.78, "ma200": 1.73, "above_ma200": true, "avg_val20_m": 0.73, "tech_score": 69}, {"idx": 49, "symbol": "RATCH", "name": "RATCH", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 36.5, "chg_1d": -0.6802721088435382, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.335, "d_sig": -0.194, "d_hist": -0.141, "w_macd": 1.301, "m_macd": 1.64, "rsi14": 40.9, "ma10": 36.83, "ma25": 37.53, "ma55": 37.65, "ma89": 37.63, "ma200": 33.49, "above_ma200": true, "avg_val20_m": 214.83, "tech_score": 68}, {"idx": 50, "symbol": "MGC", "name": "MGC", "sector": "Automotive", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 6.4, "chg_1d": -1.538461538461533, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -0.153, "d_sig": -0.193, "d_hist": 0.04, "w_macd": 0.028, "m_macd": 0.546, "rsi14": 46.9, "ma10": 6.28, "ma25": 6.55, "ma55": 6.86, "ma89": 7.67, "ma200": 6.17, "above_ma200": true, "avg_val20_m": 13.29, "tech_score": 68}, {"idx": 51, "symbol": "AIE", "name": "AIE", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 1.42, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 2, "d_macd": -0.034, "d_sig": -0.038, "d_hist": 0.004, "w_macd": 0.06, "m_macd": 0.006, "rsi14": 46.6, "ma10": 1.38, "ma25": 1.44, "ma55": 1.51, "ma89": 1.44, "ma200": 1.27, "above_ma200": true, "avg_val20_m": 2.68, "tech_score": 68}, {"idx": 52, "symbol": "PYLON", "name": "PYLON", "sector": "Construction Services", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 3.78, "chg_1d": 2.1621621621621623, "days_macd_pos": 0, "days_hist_pos": 1, "d_macd": -0.053, "d_sig": -0.055, "d_hist": 0.002, "w_macd": 0.145, "m_macd": 0.34, "rsi14": 51.2, "ma10": 3.66, "ma25": 3.79, "ma55": 3.85, "ma89": 3.78, "ma200": 3.38, "above_ma200": true, "avg_val20_m": 2.02, "tech_score": 68}, {"idx": 53, "symbol": "SVOA", "name": "SVOA", "sector": "Information & Communication Technology", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 1.98, "chg_1d": 1.0204081632652962, "days_macd_pos": 0, "days_hist_pos": 1, "d_macd": -0.015, "d_sig": -0.016, "d_hist": 0.001, "w_macd": 0.058, "m_macd": 0.102, "rsi14": 48.8, "ma10": 1.95, "ma25": 2.0, "ma55": 2.01, "ma89": 2.08, "ma200": 1.8, "above_ma200": true, "avg_val20_m": 2.0, "tech_score": 68}, {"idx": 54, "symbol": "CCET", "name": "CCET", "sector": "Electronic Components", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 8.1, "chg_1d": 5.1948051948051965, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.439, "d_sig": -0.362, "d_hist": -0.077, "w_macd": 0.318, "m_macd": 1.061, "rsi14": 44.2, "ma10": 7.76, "ma25": 8.82, "ma55": 8.99, "ma89": 8.88, "ma200": 7.4, "above_ma200": true, "avg_val20_m": 779.06, "tech_score": 67}, {"idx": 55, "symbol": "STPI", "name": "STPI", "sector": "Construction Services", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 5.55, "chg_1d": -0.8928571428571397, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.009, "d_sig": -0.009, "d_hist": -0.001, "w_macd": 0.134, "m_macd": 0.537, "rsi14": 49.9, "ma10": 5.52, "ma25": 5.56, "ma55": 5.55, "ma89": 5.72, "ma200": 5.16, "above_ma200": true, "avg_val20_m": 104.71, "tech_score": 67}, {"idx": 56, "symbol": "BCP", "name": "BCP", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 44.5, "chg_1d": -1.1111111111111072, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -2.186, "d_sig": -1.942, "d_hist": -0.244, "w_macd": 2.53, "m_macd": 3.244, "rsi14": 33.7, "ma10": 45.0, "ma25": 48.9, "ma55": 52.31, "ma89": 48.99, "ma200": 41.15, "above_ma200": true, "avg_val20_m": 831.0, "tech_score": 66}, {"idx": 57, "symbol": "IRPC", "name": "IRPC", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 2.4, "chg_1d": -4.000000000000004, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.111, "d_sig": -0.082, "d_hist": -0.029, "w_macd": 0.214, "m_macd": 0.244, "rsi14": 33.0, "ma10": 2.52, "ma25": 2.73, "ma55": 2.8, "ma89": 2.57, "ma200": 2.03, "above_ma200": true, "avg_val20_m": 266.53, "tech_score": 66}, {"idx": 58, "symbol": "TASCO", "name": "TASCO", "sector": "Construction Materials", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 16.6, "chg_1d": -1.1904761904761862, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.119, "d_sig": -0.061, "d_hist": -0.057, "w_macd": 0.74, "m_macd": 0.012, "rsi14": 42.0, "ma10": 16.79, "ma25": 17.16, "ma55": 17.14, "ma89": 16.27, "ma200": 14.86, "above_ma200": true, "avg_val20_m": 107.32, "tech_score": 66}, {"idx": 59, "symbol": "TEAM", "name": "TEAM", "sector": "Electronic Components", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 5.4, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.217, "d_sig": -0.188, "d_hist": -0.029, "w_macd": 0.448, "m_macd": 0.496, "rsi14": 45.8, "ma10": 5.16, "ma25": 5.79, "ma55": 5.76, "ma89": 5.43, "ma200": 4.23, "above_ma200": true, "avg_val20_m": 18.72, "tech_score": 66}, {"idx": 60, "symbol": "KBSPIF", "name": "KBSPIF", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 9.3, "chg_1d": -0.5347593582887611, "days_macd_pos": 0, "days_hist_pos": 5, "d_macd": -0.024, "d_sig": -0.031, "d_hist": 0.007, "w_macd": 0.089, "m_macd": 0.299, "rsi14": 44.9, "ma10": 9.3, "ma25": 9.33, "ma55": 9.4, "ma89": 9.52, "ma200": 9.05, "above_ma200": true, "avg_val20_m": 0.77, "tech_score": 66}, {"idx": 61, "symbol": "PTL", "name": "PTL", "sector": "Packaging", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 13.6, "chg_1d": 0.7407407407407307, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -0.169, "d_sig": -0.197, "d_hist": 0.028, "w_macd": 0.616, "m_macd": 0.413, "rsi14": 45.3, "ma10": 13.45, "ma25": 13.68, "ma55": 14.11, "ma89": 14.26, "ma200": 11.67, "above_ma200": true, "avg_val20_m": 0.46, "tech_score": 66}, {"idx": 62, "symbol": "KUMWEL", "name": "KUMWEL", "sector": "Industrial", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 2.02, "chg_1d": 1.0000000000000009, "days_macd_pos": 0, "days_hist_pos": 2, "d_macd": -0.033, "d_sig": -0.037, "d_hist": 0.004, "w_macd": 0.089, "m_macd": 0.146, "rsi14": 46.4, "ma10": 2.0, "ma25": 2.05, "ma55": 2.1, "ma89": 2.2, "ma200": 1.72, "above_ma200": true, "avg_val20_m": 0.25, "tech_score": 66}, {"idx": 63, "symbol": "PPM", "name": "PPM", "sector": "Industrial", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 1.91, "chg_1d": 1.0582010582010692, "days_macd_pos": 0, "days_hist_pos": 1, "d_macd": -0.032, "d_sig": -0.034, "d_hist": 0.002, "w_macd": 0.061, "m_macd": 0.03, "rsi14": 46.7, "ma10": 1.87, "ma25": 1.92, "ma55": 1.99, "ma89": 2.02, "ma200": 1.7, "above_ma200": true, "avg_val20_m": 0.09, "tech_score": 66}, {"idx": 64, "symbol": "MIDA", "name": "MIDA", "sector": "Commerce", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 0.41, "chg_1d": 2.499999999999991, "days_macd_pos": 0, "days_hist_pos": 1, "d_macd": -0.012, "d_sig": -0.014, "d_hist": 0.002, "w_macd": 0.019, "m_macd": 0.02, "rsi14": 48.4, "ma10": 0.39, "ma25": 0.42, "ma55": 0.44, "ma89": 0.45, "ma200": 0.35, "above_ma200": true, "avg_val20_m": 0.08, "tech_score": 66}, {"idx": 65, "symbol": "CK", "name": "CK", "sector": "Construction Services", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 17.7, "chg_1d": -1.1173184357541888, "days_macd_pos": 0, "days_hist_pos": 7, "d_macd": -0.001, "d_sig": -0.102, "d_hist": 0.101, "w_macd": 0.049, "m_macd": 0.094, "rsi14": 52.5, "ma10": 17.46, "ma25": 17.39, "ma55": 17.74, "ma89": 18.13, "ma200": 17.19, "above_ma200": true, "avg_val20_m": 89.64, "tech_score": 65}, {"idx": 66, "symbol": "QTC", "name": "QTC", "sector": "Industrial Materials & Machinery", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 5.1, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.029, "d_sig": -0.01, "d_hist": -0.019, "w_macd": 0.281, "m_macd": 0.283, "rsi14": 47.1, "ma10": 5.09, "ma25": 5.19, "ma55": 5.14, "ma89": 5.01, "ma200": 4.32, "above_ma200": true, "avg_val20_m": 0.96, "tech_score": 65}, {"idx": 67, "symbol": "SYNTEC", "name": "SYNTEC", "sector": "Construction Services", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 1.77, "chg_1d": -0.5617977528089901, "days_macd_pos": 0, "days_hist_pos": 4, "d_macd": -0.018, "d_sig": -0.025, "d_hist": 0.008, "w_macd": 0.007, "m_macd": 0.029, "rsi14": 49.0, "ma10": 1.74, "ma25": 1.76, "ma55": 1.84, "ma89": 1.85, "ma200": 1.74, "above_ma200": true, "avg_val20_m": 0.83, "tech_score": 65}, {"idx": 68, "symbol": "TKS", "name": "TKS", "sector": "Media & Publishing", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 7.9, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.02, "d_sig": -0.018, "d_hist": -0.002, "w_macd": 0.254, "m_macd": 0.18, "rsi14": 50.2, "ma10": 7.86, "ma25": 7.91, "ma55": 7.93, "ma89": 7.8, "ma200": 7.15, "above_ma200": true, "avg_val20_m": 0.68, "tech_score": 65}, {"idx": 69, "symbol": "SLP", "name": "SLP", "sector": "Packaging", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 0.47, "chg_1d": -6.000000000000005, "days_macd_pos": 0, "days_hist_pos": 2, "d_macd": -0.008, "d_sig": -0.015, "d_hist": 0.007, "w_macd": 0.002, "m_macd": 0.003, "rsi14": 55.1, "ma10": 0.43, "ma25": 0.45, "ma55": 0.47, "ma89": null, "ma200": null, "above_ma200": false, "avg_val20_m": 0.35, "tech_score": 65}, {"idx": 70, "symbol": "TSC", "name": "TSC", "sector": "Automotive", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 15.0, "chg_1d": 0.6711409395973034, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -0.018, "d_sig": -0.03, "d_hist": 0.012, "w_macd": 0.038, "m_macd": 0.32, "rsi14": 52.6, "ma10": 14.9, "ma25": 14.91, "ma55": 15.03, "ma89": 15.11, "ma200": 14.86, "above_ma200": true, "avg_val20_m": 0.21, "tech_score": 65}, {"idx": 71, "symbol": "EASTW", "name": "EASTW", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 4.26, "chg_1d": -1.388888888888895, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.185, "d_sig": -0.185, "d_hist": -0.0, "w_macd": 0.164, "m_macd": 0.349, "rsi14": 37.8, "ma10": 4.21, "ma25": 4.58, "ma55": 4.78, "ma89": 4.92, "ma200": 3.9, "above_ma200": true, "avg_val20_m": 12.78, "tech_score": 64}, {"idx": 72, "symbol": "BBL", "name": "BBL", "sector": "Banking", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 182.0, "chg_1d": 0.2754820936639035, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -1.438, "d_sig": -1.411, "d_hist": -0.027, "w_macd": 1.982, "m_macd": 10.004, "rsi14": 43.4, "ma10": 182.4, "ma25": 183.4, "ma55": 187.66, "ma89": 189.82, "ma200": 177.46, "above_ma200": true, "avg_val20_m": 1387.61, "tech_score": 63}, {"idx": 73, "symbol": "PSL", "name": "PSL", "sector": "Transportation & Logistics", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 8.55, "chg_1d": -1.1560693641618491, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.338, "d_sig": -0.259, "d_hist": -0.078, "w_macd": 0.396, "m_macd": 0.164, "rsi14": 34.4, "ma10": 8.82, "ma25": 9.27, "ma55": 9.81, "ma89": 9.38, "ma200": 8.04, "above_ma200": true, "avg_val20_m": 90.36, "tech_score": 63}, {"idx": 74, "symbol": "UKEM", "name": "UKEM", "sector": "Industrial", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 1.13, "chg_1d": -2.586206896551724, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -0.049, "d_sig": -0.055, "d_hist": 0.005, "w_macd": 0.049, "m_macd": 0.119, "rsi14": 39.6, "ma10": 1.14, "ma25": 1.19, "ma55": 1.34, "ma89": 1.29, "ma200": 1.04, "above_ma200": true, "avg_val20_m": 11.28, "tech_score": 62}, {"idx": 75, "symbol": "PTT", "name": "PTT", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 38.25, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.798, "d_sig": -0.468, "d_hist": -0.33, "w_macd": 0.991, "m_macd": 1.711, "rsi14": 30.8, "ma10": 39.38, "ma25": 40.39, "ma55": 41.09, "ma89": 40.22, "ma200": 37.49, "above_ma200": true, "avg_val20_m": 3201.73, "tech_score": 61}, {"idx": 76, "symbol": "TOP", "name": "TOP", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 58.5, "chg_1d": -0.8474576271186418, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -3.195, "d_sig": -2.548, "d_hist": -0.647, "w_macd": 3.457, "m_macd": 5.471, "rsi14": 37.3, "ma10": 58.68, "ma25": 66.07, "ma55": 66.22, "ma89": 64.11, "ma200": 54.51, "above_ma200": true, "avg_val20_m": 1801.76, "tech_score": 61}, {"idx": 77, "symbol": "PTTGC", "name": "PTTGC", "sector": "Petrochemicals & Chemicals", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 40.0, "chg_1d": -3.6144578313253017, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -2.497, "d_sig": -1.516, "d_hist": -0.981, "w_macd": 3.087, "m_macd": 3.627, "rsi14": 30.5, "ma10": 42.55, "ma25": 48.15, "ma55": 47.77, "ma89": 43.79, "ma200": 37.15, "above_ma200": true, "avg_val20_m": 1786.14, "tech_score": 61}, {"idx": 78, "symbol": "SCC", "name": "SCC", "sector": "Construction Materials", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 238.0, "chg_1d": -0.8333333333333304, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -7.352, "d_sig": -4.654, "d_hist": -2.697, "w_macd": 5.699, "m_macd": 5.093, "rsi14": 35.5, "ma10": 241.8, "ma25": 258.92, "ma55": 259.53, "ma89": 256.94, "ma200": 235.31, "above_ma200": true, "avg_val20_m": 1449.74, "tech_score": 61}, {"idx": 79, "symbol": "STA", "name": "STA", "sector": "Agribusiness", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 19.2, "chg_1d": 1.0526315789473717, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.814, "d_sig": -0.4, "d_hist": -0.415, "w_macd": 1.015, "m_macd": 0.917, "rsi14": 31.6, "ma10": 20.27, "ma25": 22.01, "ma55": 21.83, "ma89": 20.63, "ma200": 18.32, "above_ma200": true, "avg_val20_m": 238.66, "tech_score": 61}, {"idx": 80, "symbol": "TCAP", "name": "TCAP", "sector": "Banking", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 75.25, "chg_1d": 1.346801346801341, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -1.493, "d_sig": -1.207, "d_hist": -0.286, "w_macd": 3.315, "m_macd": 7.857, "rsi14": 37.6, "ma10": 76.3, "ma25": 78.1, "ma55": 80.85, "ma89": 80.07, "ma200": 68.29, "above_ma200": true, "avg_val20_m": 200.23, "tech_score": 61}, {"idx": 81, "symbol": "PRG", "name": "PRG", "sector": "Food & Beverage", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 10.7, "chg_1d": -1.834862385321112, "days_macd_pos": 0, "days_hist_pos": 8, "d_macd": -0.017, "d_sig": -0.06, "d_hist": 0.044, "w_macd": 0.324, "m_macd": 0.353, "rsi14": 50.9, "ma10": 10.62, "ma25": 10.62, "ma55": 10.88, "ma89": 10.63, "ma200": 9.76, "above_ma200": true, "avg_val20_m": 0.12, "tech_score": 61}, {"idx": 82, "symbol": "CTW", "name": "CTW", "sector": "Industrial Materials & Machinery", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 6.2, "chg_1d": 0.8130081300812941, "days_macd_pos": 0, "days_hist_pos": 3, "d_macd": -0.118, "d_sig": -0.157, "d_hist": 0.039, "w_macd": 0.273, "m_macd": 0.634, "rsi14": 51.8, "ma10": 5.97, "ma25": 6.17, "ma55": 6.45, "ma89": 6.48, "ma200": null, "above_ma200": false, "avg_val20_m": 0.33, "tech_score": 60}, {"idx": 83, "symbol": "SCCC", "name": "SCCC", "sector": "Construction Materials", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 151.5, "chg_1d": -0.6557377049180357, "days_macd_pos": 0, "days_hist_pos": 7, "d_macd": -0.152, "d_sig": -0.287, "d_hist": 0.135, "w_macd": 1.405, "m_macd": 0.671, "rsi14": 49.1, "ma10": 151.3, "ma25": 151.4, "ma55": 152.48, "ma89": 151.55, "ma200": 146.99, "above_ma200": true, "avg_val20_m": 6.52, "tech_score": 59}, {"idx": 84, "symbol": "MDX", "name": "MDX", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.12, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.119, "d_sig": -0.103, "d_hist": -0.016, "w_macd": 0.125, "m_macd": 0.013, "rsi14": 36.9, "ma10": 3.1, "ma25": 3.37, "ma55": 3.45, "ma89": 3.45, "ma200": 2.89, "above_ma200": true, "avg_val20_m": 1.43, "tech_score": 59}, {"idx": 85, "symbol": "FORTH", "name": "FORTH", "sector": "Information & Communication Technology", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 13.4, "chg_1d": -1.4705882352941124, "days_macd_pos": 0, "days_hist_pos": 6, "d_macd": -0.243, "d_sig": -0.285, "d_hist": 0.043, "w_macd": 0.337, "m_macd": 0.038, "rsi14": 45.6, "ma10": 13.39, "ma25": 13.69, "ma55": 14.35, "ma89": 15.11, "ma200": 12.16, "above_ma200": true, "avg_val20_m": 17.49, "tech_score": 58}, {"idx": 86, "symbol": "PIS", "name": "PIS", "sector": "Technology", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 5.5, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 2, "d_macd": -0.137, "d_sig": -0.163, "d_hist": 0.026, "w_macd": 0.378, "m_macd": 0.005, "rsi14": 52.1, "ma10": 5.27, "ma25": null, "ma55": null, "ma89": null, "ma200": null, "above_ma200": false, "avg_val20_m": 1.59, "tech_score": 58}, {"idx": 87, "symbol": "INSET", "name": "INSET", "sector": "Information & Communication Technology", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 4.32, "chg_1d": -2.7027027027027084, "days_macd_pos": 0, "days_hist_pos": 7, "d_macd": -0.022, "d_sig": -0.043, "d_hist": 0.021, "w_macd": 0.277, "m_macd": 0.542, "rsi14": 45.3, "ma10": 4.46, "ma25": 4.46, "ma55": 4.56, "ma89": 4.58, "ma200": 3.59, "above_ma200": true, "avg_val20_m": 66.17, "tech_score": 57}, {"idx": 88, "symbol": "BIZ", "name": "BIZ", "sector": "Personal Products & Pharmaceuticals", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 5.9, "chg_1d": 0.8547008547008739, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.058, "d_sig": -0.044, "d_hist": -0.014, "w_macd": 0.208, "m_macd": 0.605, "rsi14": 41.5, "ma10": 5.9, "ma25": 6.01, "ma55": 6.03, "ma89": 6.02, "ma200": 5.39, "above_ma200": true, "avg_val20_m": 1.33, "tech_score": 57}, {"idx": 89, "symbol": "TL", "name": "TL", "sector": "Information & Communication Technology", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 0.41, "chg_1d": 5.12820512820511, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.015, "d_sig": -0.012, "d_hist": -0.004, "w_macd": 0.008, "m_macd": 0.003, "rsi14": 43.7, "ma10": 0.4, "ma25": 0.44, "ma55": 0.44, "ma89": 0.43, "ma200": 0.4, "above_ma200": true, "avg_val20_m": 1.14, "tech_score": 56}, {"idx": 90, "symbol": "PCC", "name": "PCC", "sector": "Industrial Materials & Machinery", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.14, "chg_1d": 0.6410256410256387, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.049, "d_sig": -0.029, "d_hist": -0.02, "w_macd": 0.1, "m_macd": 0.085, "rsi14": 38.6, "ma10": 3.18, "ma25": 3.27, "ma55": 3.26, "ma89": 3.15, "ma200": 2.94, "above_ma200": true, "avg_val20_m": 1.66, "tech_score": 55}, {"idx": 91, "symbol": "PRM", "name": "PRM", "sector": "Transportation & Logistics", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 8.6, "chg_1d": -1.1494252873563204, "days_macd_pos": 0, "days_hist_pos": 19, "d_macd": -0.117, "d_sig": -0.143, "d_hist": 0.026, "w_macd": 0.021, "m_macd": 0.528, "rsi14": 44.7, "ma10": 8.6, "ma25": 8.63, "ma55": 9.12, "ma89": 9.33, "ma200": 8.64, "above_ma200": false, "avg_val20_m": 33.9, "tech_score": 54}, {"idx": 92, "symbol": "TTW", "name": "TTW", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 10.0, "chg_1d": -0.990099009900991, "days_macd_pos": 0, "days_hist_pos": 16, "d_macd": -0.006, "d_sig": -0.015, "d_hist": 0.009, "w_macd": 0.107, "m_macd": 0.241, "rsi14": 46.9, "ma10": 10.04, "ma25": 10.01, "ma55": 10.11, "ma89": 10.18, "ma200": 9.68, "above_ma200": true, "avg_val20_m": 22.64, "tech_score": 54}, {"idx": 93, "symbol": "ADVICE", "name": "ADVICE", "sector": "Commerce", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 6.7, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.072, "d_sig": -0.041, "d_hist": -0.03, "w_macd": 0.152, "m_macd": 0.437, "rsi14": 41.1, "ma10": 6.76, "ma25": 6.92, "ma55": 6.91, "ma89": 6.99, "ma200": 6.36, "above_ma200": true, "avg_val20_m": 7.04, "tech_score": 54}, {"idx": 94, "symbol": "SGP", "name": "SGP", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 8.3, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.183, "d_sig": -0.151, "d_hist": -0.032, "w_macd": 0.115, "m_macd": 0.226, "rsi14": 37.6, "ma10": 8.3, "ma25": 8.64, "ma55": 8.81, "ma89": 8.6, "ma200": 8.29, "above_ma200": true, "avg_val20_m": 1.46, "tech_score": 54}, {"idx": 95, "symbol": "FTE", "name": "FTE", "sector": "Industrial Materials & Machinery", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 2.46, "chg_1d": 0.8196721311475308, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.072, "d_sig": -0.069, "d_hist": -0.003, "w_macd": 0.063, "m_macd": 0.265, "rsi14": 43.2, "ma10": 2.4, "ma25": 2.57, "ma55": 2.64, "ma89": 2.67, "ma200": 2.36, "above_ma200": true, "avg_val20_m": 0.38, "tech_score": 54}, {"idx": 96, "symbol": "RCL", "name": "RCL", "sector": "Transportation & Logistics", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 39.0, "chg_1d": -0.6369426751592355, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -1.55, "d_sig": -0.283, "d_hist": -1.266, "w_macd": 3.222, "m_macd": 4.394, "rsi14": 28.6, "ma10": 44.0, "ma25": 45.88, "ma55": 45.14, "ma89": 41.66, "ma200": 35.49, "above_ma200": true, "avg_val20_m": 237.6, "tech_score": 53}, {"idx": 97, "symbol": "TITLE", "name": "TITLE", "sector": "Property Development", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 8.1, "chg_1d": 1.8867924528301885, "days_macd_pos": 0, "days_hist_pos": 1, "d_macd": -0.191, "d_sig": -0.209, "d_hist": 0.018, "w_macd": 0.047, "m_macd": 1.259, "rsi14": 48.9, "ma10": 7.9, "ma25": 8.11, "ma55": 8.55, "ma89": 8.77, "ma200": 8.2, "above_ma200": false, "avg_val20_m": 3.39, "tech_score": 53}, {"idx": 98, "symbol": "ASAP", "name": "ASAP", "sector": "Automotive", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 1.87, "chg_1d": 2.74725274725276, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.064, "d_sig": -0.054, "d_hist": -0.01, "w_macd": 0.074, "m_macd": 0.006, "rsi14": 36.5, "ma10": 1.92, "ma25": 2.01, "ma55": 2.09, "ma89": 2.11, "ma200": 1.74, "above_ma200": true, "avg_val20_m": 0.08, "tech_score": 53}, {"idx": 99, "symbol": "PTTEP", "name": "PTTEP", "sector": "Energy & Utilities", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 142.0, "chg_1d": -0.6993006993006978, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -2.685, "d_sig": -0.523, "d_hist": -2.161, "w_macd": 2.824, "m_macd": 5.236, "rsi14": 36.4, "ma10": 148.0, "ma25": 152.78, "ma55": 151.01, "ma89": 149.06, "ma200": 144.56, "above_ma200": false, "avg_val20_m": 2984.93, "tech_score": 51}, {"idx": 100, "symbol": "PSP", "name": "PSP", "sector": "Industrial Materials & Machinery", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 7.05, "chg_1d": -1.3986013986014068, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.046, "d_sig": -0.012, "d_hist": -0.034, "w_macd": 0.356, "m_macd": 0.36, "rsi14": 43.0, "ma10": 7.2, "ma25": 7.27, "ma55": 7.34, "ma89": 7.46, "ma200": 5.99, "above_ma200": true, "avg_val20_m": 8.85, "tech_score": 51}, {"idx": 101, "symbol": "STP", "name": "STP", "sector": "Industrial", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 11.4, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 22, "d_macd": -0.025, "d_sig": -0.036, "d_hist": 0.012, "w_macd": 0.067, "m_macd": 0.022, "rsi14": 47.2, "ma10": 11.41, "ma25": 11.39, "ma55": 11.58, "ma89": 11.79, "ma200": 11.15, "above_ma200": true, "avg_val20_m": 0.25, "tech_score": 51}, {"idx": 102, "symbol": "NUT", "name": "NUT", "sector": "Consumer Products", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 4.76, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 11, "d_macd": -0.003, "d_sig": -0.016, "d_hist": 0.013, "w_macd": 0.067, "m_macd": 0.102, "rsi14": 51.1, "ma10": 4.77, "ma25": 4.72, "ma55": 4.79, "ma89": 4.87, "ma200": 4.48, "above_ma200": true, "avg_val20_m": 0.12, "tech_score": 51}, {"idx": 103, "symbol": "IRC", "name": "IRC", "sector": "Automotive", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 13.0, "chg_1d": 0.7751937984496138, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.068, "d_sig": -0.035, "d_hist": -0.033, "w_macd": 0.364, "m_macd": 0.006, "rsi14": 45.8, "ma10": 13.07, "ma25": 13.17, "ma55": 13.27, "ma89": 12.84, "ma200": null, "above_ma200": false, "avg_val20_m": 0.08, "tech_score": 51}, {"idx": 104, "symbol": "BJCHI", "name": "BJCHI", "sector": "Construction Services", "group_id": 1, "group_tag": "Group 1 (Early Turnaround)", "tag_class": "badge-turnaround", "is_top9": false, "is_turnaround": true, "close": 2.96, "chg_1d": -1.9867549668874165, "days_macd_pos": 0, "days_hist_pos": 2, "d_macd": -0.058, "d_sig": -0.064, "d_hist": 0.006, "w_macd": 0.384, "m_macd": 0.478, "rsi14": 37.7, "ma10": 2.97, "ma25": 3.04, "ma55": 3.21, "ma89": 3.22, "ma200": null, "above_ma200": false, "avg_val20_m": 0.13, "tech_score": 50}, {"idx": 105, "symbol": "CNT", "name": "CNT", "sector": "Construction Services", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.1, "chg_1d": -1.898734177215189, "days_macd_pos": 0, "days_hist_pos": 6, "d_macd": -0.002, "d_sig": -0.009, "d_hist": 0.007, "w_macd": 0.422, "m_macd": 0.466, "rsi14": 49.1, "ma10": 3.1, "ma25": 3.12, "ma55": 3.19, "ma89": 2.74, "ma200": null, "above_ma200": false, "avg_val20_m": 3.46, "tech_score": 49}, {"idx": 106, "symbol": "SPVI", "name": "SPVI", "sector": "Technology", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.44, "chg_1d": -2.824858757062154, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.03, "d_sig": -0.026, "d_hist": -0.004, "w_macd": 0.122, "m_macd": 0.168, "rsi14": 41.3, "ma10": 3.48, "ma25": 3.59, "ma55": 3.61, "ma89": 3.58, "ma200": 3.18, "above_ma200": true, "avg_val20_m": 2.74, "tech_score": 49}, {"idx": 107, "symbol": "SELIC", "name": "SELIC", "sector": "Industrial Materials & Machinery", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.2, "chg_1d": 2.564102564102577, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.009, "d_sig": -0.003, "d_hist": -0.006, "w_macd": 0.115, "m_macd": 0.085, "rsi14": 54.1, "ma10": 3.14, "ma25": null, "ma55": null, "ma89": null, "ma200": null, "above_ma200": false, "avg_val20_m": 0.09, "tech_score": 49}, {"idx": 108, "symbol": "SAUCE", "name": "SAUCE", "sector": "Food & Beverage", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 40.75, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.147, "d_sig": -0.14, "d_hist": -0.007, "w_macd": 0.007, "m_macd": 0.899, "rsi14": 49.3, "ma10": 40.55, "ma25": 40.75, "ma55": 41.13, "ma89": 41.19, "ma200": 40.94, "above_ma200": false, "avg_val20_m": 0.22, "tech_score": 48}, {"idx": 109, "symbol": "KBS", "name": "KBS", "sector": "Food & Beverage", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 6.2, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.051, "d_sig": -0.026, "d_hist": -0.026, "w_macd": 0.137, "m_macd": 0.185, "rsi14": 35.8, "ma10": 6.3, "ma25": 6.41, "ma55": 6.4, "ma89": 6.28, "ma200": 6.01, "above_ma200": true, "avg_val20_m": 1.24, "tech_score": 47}, {"idx": 110, "symbol": "IT", "name": "IT", "sector": "Commerce", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 6.8, "chg_1d": -0.7299270072992692, "days_macd_pos": 0, "days_hist_pos": 6, "d_macd": -0.056, "d_sig": -0.061, "d_hist": 0.004, "w_macd": 0.352, "m_macd": 0.717, "rsi14": 46.1, "ma10": 6.8, "ma25": 6.95, "ma55": 6.96, "ma89": 7.22, "ma200": 5.67, "above_ma200": true, "avg_val20_m": 0.92, "tech_score": 47}, {"idx": 111, "symbol": "ASW", "name": "ASW", "sector": "Property Development", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 7.45, "chg_1d": -0.6666666666666599, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.053, "d_sig": -0.05, "d_hist": -0.003, "w_macd": 0.116, "m_macd": 0.049, "rsi14": 37.4, "ma10": 7.52, "ma25": 7.59, "ma55": 7.72, "ma89": 7.68, "ma200": 7.3, "above_ma200": true, "avg_val20_m": 0.81, "tech_score": 45}, {"idx": 112, "symbol": "INOX", "name": "INOX", "sector": "Steel and Metal Products", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.74, "chg_1d": -0.5319148936170137, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.037, "d_sig": -0.033, "d_hist": -0.004, "w_macd": 0.32, "m_macd": 0.913, "rsi14": 38.7, "ma10": 3.77, "ma25": 3.84, "ma55": 3.87, "ma89": 3.98, "ma200": 2.69, "above_ma200": true, "avg_val20_m": 0.07, "tech_score": 45}, {"idx": 113, "symbol": "UP", "name": "UP", "sector": "Petrochemicals & Chemicals", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 25.5, "chg_1d": 2.0000000000000018, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.159, "d_sig": -0.068, "d_hist": -0.091, "w_macd": 0.717, "m_macd": 1.726, "rsi14": 41.6, "ma10": 25.75, "ma25": null, "ma55": null, "ma89": null, "ma200": null, "above_ma200": false, "avg_val20_m": 0.06, "tech_score": 45}, {"idx": 114, "symbol": "PAP", "name": "PAP", "sector": "Steel and Metal Products", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.06, "chg_1d": -0.6493506493506551, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.024, "d_sig": -0.004, "d_hist": -0.02, "w_macd": 0.195, "m_macd": 0.205, "rsi14": 38.0, "ma10": 3.17, "ma25": 3.18, "ma55": 3.2, "ma89": 3.02, "ma200": null, "above_ma200": false, "avg_val20_m": 0.31, "tech_score": 41}, {"idx": 115, "symbol": "PSGC", "name": "PSGC", "sector": "Property & Construction", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 4.66, "chg_1d": -2.1008403361344463, "days_macd_pos": 0, "days_hist_pos": 18, "d_macd": -0.101, "d_sig": -0.122, "d_hist": 0.02, "w_macd": 0.12, "m_macd": 1.105, "rsi14": 33.0, "ma10": 4.73, "ma25": 4.8, "ma55": 5.22, "ma89": 5.29, "ma200": 4.4, "above_ma200": true, "avg_val20_m": 0.43, "tech_score": 40}, {"idx": 116, "symbol": "TRT", "name": "TRT", "sector": "Industrial", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 9.8, "chg_1d": -2.970297029702962, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.565, "d_sig": -0.378, "d_hist": -0.187, "w_macd": 0.618, "m_macd": 2.203, "rsi14": 27.6, "ma10": 10.86, "ma25": 11.67, "ma55": 12.14, "ma89": 12.92, "ma200": 9.09, "above_ma200": true, "avg_val20_m": 17.73, "tech_score": 39}, {"idx": 117, "symbol": "2S", "name": "2S", "sector": "Steel and Metal Products", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.36, "chg_1d": -4.000000000000004, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.028, "d_sig": -0.02, "d_hist": -0.008, "w_macd": 0.13, "m_macd": 0.166, "rsi14": 28.0, "ma10": 3.51, "ma25": 3.53, "ma55": 3.6, "ma89": 3.54, "ma200": 3.11, "above_ma200": true, "avg_val20_m": 0.61, "tech_score": 37}, {"idx": 118, "symbol": "AYUD", "name": "AYUD", "sector": "Insurance", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 42.0, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 12, "d_macd": -0.163, "d_sig": -0.19, "d_hist": 0.026, "w_macd": 0.75, "m_macd": 2.085, "rsi14": 48.5, "ma10": null, "ma25": null, "ma55": null, "ma89": null, "ma200": null, "above_ma200": false, "avg_val20_m": 0.26, "tech_score": 37}, {"idx": 119, "symbol": "THANA", "name": "THANA", "sector": "Property & Construction", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 1.56, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.005, "d_sig": -0.004, "d_hist": -0.001, "w_macd": 0.022, "m_macd": 0.043, "rsi14": 45.2, "ma10": 1.57, "ma25": 1.57, "ma55": 1.58, "ma89": null, "ma200": null, "above_ma200": false, "avg_val20_m": 0.06, "tech_score": 37}, {"idx": 120, "symbol": "ROCK", "name": "ROCK", "sector": "Home & Office Products", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 10.7, "chg_1d": NaN, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.014, "d_sig": 0.022, "d_hist": -0.036, "w_macd": 0.127, "m_macd": 0.085, "rsi14": 56.3, "ma10": null, "ma25": null, "ma55": null, "ma89": null, "ma200": null, "above_ma200": false, "avg_val20_m": 0.03, "tech_score": 37}, {"idx": 121, "symbol": "HTECH", "name": "HTECH", "sector": "Industrial Materials & Machinery", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.92, "chg_1d": -1.5075376884422176, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.215, "d_sig": -0.15, "d_hist": -0.064, "w_macd": 0.231, "m_macd": 0.301, "rsi14": 28.5, "ma10": 4.24, "ma25": 4.62, "ma55": 4.7, "ma89": 4.48, "ma200": 3.75, "above_ma200": true, "avg_val20_m": 6.99, "tech_score": 36}, {"idx": 122, "symbol": "SWC", "name": "SWC", "sector": "Industrial", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 4.82, "chg_1d": 0.0, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.012, "d_sig": 0.006, "d_hist": -0.018, "w_macd": 0.157, "m_macd": 0.213, "rsi14": 34.4, "ma10": null, "ma25": null, "ma55": null, "ma89": null, "ma200": null, "above_ma200": false, "avg_val20_m": 0.04, "tech_score": 35}, {"idx": 123, "symbol": "CPI", "name": "CPI", "sector": "Food & Beverage", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 3.4, "chg_1d": -0.5847953216374324, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.025, "d_sig": -0.016, "d_hist": -0.009, "w_macd": 0.006, "m_macd": 0.171, "rsi14": 35.7, "ma10": 3.45, "ma25": 3.48, "ma55": 3.49, "ma89": 3.51, "ma200": 3.48, "above_ma200": false, "avg_val20_m": 0.38, "tech_score": 30}, {"idx": 124, "symbol": "CPT", "name": "CPT", "sector": "Industrial Materials & Machinery", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 1.05, "chg_1d": -1.869158878504673, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.018, "d_sig": -0.017, "d_hist": -0.001, "w_macd": 0.012, "m_macd": 0.045, "rsi14": 37.2, "ma10": 1.05, "ma25": 1.1, "ma55": 1.1, "ma89": 1.06, "ma200": null, "above_ma200": false, "avg_val20_m": 0.23, "tech_score": 30}, {"idx": 125, "symbol": "NDR", "name": "NDR", "sector": "Industrial", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 1.64, "chg_1d": -1.2048192771084376, "days_macd_pos": 0, "days_hist_pos": 7, "d_macd": -0.032, "d_sig": -0.033, "d_hist": 0.0, "w_macd": 0.019, "m_macd": 0.013, "rsi14": 34.3, "ma10": 1.67, "ma25": 1.7, "ma55": 1.78, "ma89": 1.78, "ma200": null, "above_ma200": false, "avg_val20_m": 0.05, "tech_score": 30}, {"idx": 126, "symbol": "VARO", "name": "VARO", "sector": "Industrial Materials & Machinery", "group_id": 1, "group_tag": "Group 1 (Pullback)", "tag_class": "badge-g1", "is_top9": false, "is_turnaround": false, "close": 4.96, "chg_1d": -5.52380952380952, "days_macd_pos": 0, "days_hist_pos": 0, "d_macd": -0.18, "d_sig": -0.134, "d_hist": -0.046, "w_macd": 0.288, "m_macd": 0.107, "rsi14": 26.2, "ma10": 5.3, "ma25": 5.59, "ma55": 5.88, "ma89": 5.3, "ma200": null, "above_ma200": false, "avg_val20_m": 0.15, "tech_score": 27}];
+        let currentFilter = 'all';
+        let sortKey = 'idx';
+        let sortAsc = true;
+
+        // ---- ticker chips for the header cards ---------------------------------
+        function chipHtml(d) {
+            const cls = d.chg_1d > 0 ? 'up' : (d.chg_1d < 0 ? 'down' : 'flat');
+            const sign = d.chg_1d > 0 ? '+' : '';
+            const tip = `${d.name} · Score ${d.tech_score} · ${sign}${d.chg_1d.toFixed(2)}% · RSI ${d.rsi14.toFixed(1)}`;
+            return `<button class="chip ${cls}" title="${tip}" onclick="focusSymbol('${d.symbol}')">`
+                 + `<span class="s">${d.symbol}</span>`
+                 + `<span class="c">${sign}${d.chg_1d.toFixed(2)}%</span></button>`;
+        }
+
+        // ---- header stats: always recomputed from the data of THIS run ----------
+        function updateStats() {
+            const groups = {
+                'stat-g2': rawData.filter(d => d.group_id === 2),
+                'stat-turnaround': rawData.filter(d => d.is_turnaround),
+                'stat-top9': rawData.filter(d => d.is_top9)
+            };
+            document.getElementById('stat-total').innerText = rawData.length;
+
+            Object.keys(groups).forEach(id => {
+                const rows = groups[id];
+                const valEl = document.getElementById(id);
+                if (valEl) valEl.innerText = rows.length;
+                const chipsEl = document.getElementById(id.replace('stat-', 'chips-'));
+                if (chipsEl) {
+                    chipsEl.innerHTML = rows.length
+                        ? rows.map(chipHtml).join('')
+                        : '<span class="chip-empty">— ไม่มีหุ้นเข้าเกณฑ์รอบนี้ —</span>';
+                }
+            });
+
+            const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
+            if (allBtn) allBtn.innerText = `All (${rawData.length})`;
+        }
+
+        // ---- click a ticker chip -> jump to it in the table ---------------------
+        function focusSymbol(sym) {
+            document.getElementById('searchInput').value = sym;
+            setFilter('all', document.querySelector('.filter-btn[data-filter="all"]'));
+            document.getElementById('stocksTable').scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+
+        function loadChart(filename, btn) {
+            document.getElementById('main-chart-img').src = filename;
+            document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+
+        function setFilter(filterType, btn) {
+            currentFilter = filterType;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderTable();
+        }
+
+        function filterTable() {
+            renderTable();
+        }
+
+        function sortTable(key) {
+            if (sortKey === key) {
+                sortAsc = !sortAsc;
+            } else {
+                sortKey = key;
+                sortAsc = (key === 'symbol' || key === 'sector' || key === 'group_tag') ? true : false;
+            }
+            
+            document.querySelectorAll('th').forEach(th => {
+                th.classList.remove('sorted-asc', 'sorted-desc');
+            });
+            
+            renderTable();
+        }
+
+        function renderTable() {
+            const query = document.getElementById('searchInput').value.trim().toUpperCase();
+            const tbody = document.getElementById('tableBody');
+            
+            let filtered = rawData.filter(d => {
+                // Search query
+                const matchSearch = d.symbol.toUpperCase().includes(query) || 
+                                    d.name.toUpperCase().includes(query) || 
+                                    d.sector.toUpperCase().includes(query);
+                if (!matchSearch) return false;
+
+                // Category filter
+                if (currentFilter === 'top9') return d.is_top9;
+                if (currentFilter === 'g2') return d.group_id === 2;
+                if (currentFilter === 'turnaround') return d.is_turnaround;
+                if (currentFilter === 'liquid') return d.avg_val20_m >= 10.0;
+                return true;
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                let vA = a[sortKey];
+                let vB = b[sortKey];
+                if (typeof vA === 'string') {
+                    return sortAsc ? vA.localeCompare(vB) : vB.localeCompare(vA);
+                }
+                return sortAsc ? (vA - vB) : (vB - vA);
+            });
+
+            document.getElementById('showing-count').innerText = filtered.length;
+
+            tbody.innerHTML = filtered.map(d => {
+                const chgClass = d.chg_1d > 0 ? 'pos' : (d.chg_1d < 0 ? 'neg' : 'neutral');
+                const chgSign = d.chg_1d > 0 ? '+' : '';
+                
+                const dMacdClass = d.d_macd >= 0 ? 'pos' : 'neg';
+                const dHistClass = d.d_hist >= 0 ? 'pos' : 'neg';
+                const wMacdClass = d.w_macd >= 0 ? 'pos' : 'neg';
+                const mMacdClass = d.m_macd >= 0 ? 'pos' : 'neg';
+                
+                let scoreClass = 'score-low';
+                if (d.tech_score >= 80) scoreClass = 'score-high';
+                else if (d.tech_score >= 65) scoreClass = 'score-mid';
+
+                const top9Badge = d.is_top9 ? '<span class="badge badge-top9">TOP 9</span>' : '';
+
+                return `<tr>
+                    <td style="color: var(--text-muted);">${d.idx}</td>
+                    <td>
+                        <div class="sym-cell">${d.symbol}${top9Badge}</div>
+                        <div class="sym-name">${d.name}</div>
+                    </td>
+                    <td>${d.sector}</td>
+                    <td><span class="badge ${d.tag_class}">${d.group_tag}</span></td>
+                    <td><span class="score-pill ${scoreClass}">${d.tech_score}</span></td>
+                    <td style="font-weight: 700;">${d.close.toFixed(2)}</td>
+                    <td class="${chgClass}">${chgSign}${d.chg_1d.toFixed(2)}%</td>
+                    <td class="${dMacdClass}">${d.d_macd >= 0 ? '+' : ''}${d.d_macd.toFixed(3)}</td>
+                    <td class="${dHistClass}">${d.d_hist >= 0 ? '+' : ''}${d.d_hist.toFixed(3)}</td>
+                    <td class="${wMacdClass}">+${d.w_macd.toFixed(3)}</td>
+                    <td class="${mMacdClass}">+${d.m_macd.toFixed(3)}</td>
+                    <td style="font-weight: 600;">${d.rsi14.toFixed(1)}</td>
+                    <td style="font-weight: 600;">${d.avg_val20_m.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        // Initial render — counts always come from rawData, never hardcoded
+        updateStats();
+        renderTable();
+    </script>
+</body>
+</html>
